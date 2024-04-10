@@ -9608,6 +9608,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: IsometricCamera
       objectReference: {fileID: 0}
+    - target: {fileID: 5977612477461989750, guid: 653a288ef3493454888c5014de15f75f, type: 3}
+      propertyPath: zoomInLimit
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6002646246464148747, guid: 653a288ef3493454888c5014de15f75f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
