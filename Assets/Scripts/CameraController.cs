@@ -4,20 +4,24 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] public float moveSpeed = 10f;
+    public float moveSpeed = 10f;
+    public float moveBoundOffset = 5f;
 
-    [SerializeField] public float rotationIncrement = 45.0f;
-    [SerializeField] public bool invertRotation = false;
+    public float rotationIncrement = 45.0f;
+    public bool invertRotation = false;
 
-    [SerializeField] public float zoomIncremet = 1.0f;
-    [SerializeField] public float zoomInLimit = 5.0f;
-    [SerializeField] public float zoomOutLimit = 25.0f;
-    [SerializeField] public float defaultZoom = 10.0f;
-    [SerializeField] public bool invertZoom = false;
+    public float zoomIncremet = 1.0f;
+    public float zoomInLimit = 5.0f;
+     public float zoomOutLimit = 25.0f;
+    public float defaultZoom = 10.0f;
+    public bool invertZoom = false;
+
+    public Tilemap enviroment = null;
 
     private Vector2 mouseDelta;
 
@@ -47,11 +51,20 @@ public class CameraController : MonoBehaviour
             moveDirection = convertInputToMove(-mouseDelta, scaleMovementWithZoom(GetComponentInChildren<Camera>().orthographicSize));
         }
         if (isMovingKeyboard || isMovingMouse)
-        {         
-            transform.position += moveDirection;
+        {
+            Vector3 newPosition = (transform.position + moveDirection);
+            if (enviroment == null)
+            {
+                transform.position = newPosition;
+            }
+            else
+            {
+                Vector3 vector3 = newPosition.ClampToBounds(enviroment.GetGameObjectTilemapBounds(), moveBoundOffset);
+                transform.position = vector3;
+            }
         }
 
-        if(canRotate && isRotating)
+        if (canRotate && isRotating)
         {
             float rotation = rotationIncrement * rotationDirection;
             transform.rotation = Quaternion.Euler(xRotation, transform.rotation.eulerAngles.y + rotation, 0.0f);
@@ -81,9 +94,9 @@ public class CameraController : MonoBehaviour
         mouseDelta = context.ReadValue<Vector2>();
     }
 
-    public void OnMoveMouse(InputAction.CallbackContext context) 
+    public void OnMoveMouse(InputAction.CallbackContext context)
     {
-        isMovingMouse = context.started || context.performed;        
+        isMovingMouse = context.started || context.performed;
     }
 
     public void OnRotate(InputAction.CallbackContext context)
@@ -91,7 +104,7 @@ public class CameraController : MonoBehaviour
         isRotating = context.started || context.performed;
         canRotate = (!context.canceled);
 
-        rotationDirection = (invertRotation ? 1 : -1 ) * context.ReadValue<float>();
+        rotationDirection = (invertRotation ? 1 : -1) * context.ReadValue<float>();
 
     }
 
@@ -101,13 +114,12 @@ public class CameraController : MonoBehaviour
         canZoom = (!context.canceled);
 
         float scrollValue = (invertRotation ? 1 : -1) * context.ReadValue<Vector2>().y;
- 
-        zoomDirection = scrollValue == 0 ? 0 : Mathf.Sign(scrollValue);        
+
+        zoomDirection = scrollValue == 0 ? 0 : Mathf.Sign(scrollValue);
     }
 
     private Vector3 convertInputToMove(Vector2 input, float moveScale)
     {
-        Debug.Log(moveScale);
         Vector2 transformendInput = Quaternion.Euler(0f, 0f, -transform.rotation.eulerAngles.y) * (input * moveScale * Time.deltaTime);
 
         return new Vector3(transformendInput.x, 0.0f, transformendInput.y);
@@ -116,6 +128,6 @@ public class CameraController : MonoBehaviour
     private float scaleMovementWithZoom(float zoom)
     {
         // TODO: Figure out how to get screen scale;
-        return zoom*0.5f;
+        return zoom * 0.5f;
     }
 }
