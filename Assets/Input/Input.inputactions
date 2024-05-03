@@ -1,5 +1,5 @@
 {
-    "name": "CameraInput",
+    "name": "Input",
     "maps": [
         {
             "name": "Gameplay",
@@ -45,6 +45,33 @@
                     "name": "MoveCameraMouse",
                     "type": "Button",
                     "id": "617569d0-3140-4955-bac9-a7b47afa6f44",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MousePosition",
+                    "type": "Value",
+                    "id": "f68c4c85-c8a7-4f49-9dd0-23baab649f5c",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "LeftClick",
+                    "type": "Button",
+                    "id": "56aa537b-a6b9-47ee-997d-6a774af2568a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SpaceClick",
+                    "type": "Button",
+                    "id": "16a727a1-6212-4993-9e93-18470eb07ac8",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -170,6 +197,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "MoveCameraMouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6bd8e8a7-67f4-4f86-b08b-9764826992bb",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MousePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "22953721-5847-4cba-aa24-1f1fdbcbe1e0",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6fb53b05-f77a-42a5-ad49-5e050c292734",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SpaceClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

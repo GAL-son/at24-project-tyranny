@@ -45,14 +45,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81f6d2aba0070d4fa3a29d3d6a0b085, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
+  moveSpeed: 15
+  moveBoundOffset: 5
   rotationIncrement: 45
   invertRotation: 0
   zoomIncremet: 2.5
-  zoomInLimit: 5
+  zoomInLimit: 2.5
   zoomOutLimit: 20
   defaultZoom: 10
   invertZoom: 0
+  enviroment: {fileID: 0}
 --- !u!1 &3698754298662965597
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,7 +99,7 @@ GameObject:
   - component: {fileID: 4489930342963781479}
   - component: {fileID: 78075490774249095}
   m_Layer: 0
-  m_Name: CameraInput
+  m_Name: Input
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -223,6 +225,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 617569d0-3140-4955-bac9-a7b47afa6f44
     m_ActionName: Gameplay/MoveCameraMouse[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f68c4c85-c8a7-4f49-9dd0-23baab649f5c
+    m_ActionName: Gameplay/MousePosition[/Mouse/position]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay
@@ -270,8 +276,8 @@ Camera:
   m_GameObject: {fileID: 5563887353135663919}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

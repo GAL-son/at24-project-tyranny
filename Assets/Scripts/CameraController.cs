@@ -10,7 +10,7 @@ using static UnityEditor.Timeline.TimelinePlaybackControls;
 public class CameraController : MonoBehaviour
 {
     public float moveSpeed = 10f;
-    public float moveBoundOffset = 5f;
+    public Vector3 moveBoundOffset = new Vector3(5f, 5f, 5f);
 
     public float rotationIncrement = 45.0f;
     public bool invertRotation = false;

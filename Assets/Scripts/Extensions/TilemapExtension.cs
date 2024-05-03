@@ -54,10 +54,6 @@ public static class TilemapExtension
     {
         BoundsInt bounds = tilemap.GetGameObjectTilemapCellBounds();
         Vector3Int size = bounds.size;
-        Debug.Log(size);
-  
-        Debug.Log(bounds.min);
-
         Grid parentGrid = tilemap.layoutGrid;
 
         GameObject[,,] objects = new GameObject [size.x+1, size.y+1, size.z+1];
@@ -65,9 +61,6 @@ public static class TilemapExtension
         foreach (Transform child in tilemap.GetComponent<Transform>())
         {
             Vector3Int cellPosition = parentGrid.WorldToCell(child.localPosition);
-            Debug.Log(cellPosition );
-            Debug.Log(cellPosition - bounds.min);
-
             objects[cellPosition.x - bounds.min.x, cellPosition.y - bounds.min.y, cellPosition.z - bounds.min.z] = child.gameObject;
         }
 
