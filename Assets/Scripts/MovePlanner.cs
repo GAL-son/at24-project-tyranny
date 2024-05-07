@@ -40,8 +40,6 @@ public class MovePlanner : MonoBehaviour
             updatePointingCell();
             List<Vector3Int> path = enviromentController.FindPath(characterWalker.getCurrentCell(), pointingCell);
 
-            Debug.Log("PATH LENGTH"+ path.Count);
-
             if (path.Count == 0)
             {
                 return;

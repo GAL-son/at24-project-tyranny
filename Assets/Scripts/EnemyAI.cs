@@ -18,58 +18,45 @@ public class EnemyAI : MonoBehaviour
 
     private void Awake()
     {
-        if (enviromentController == null)
-        {
-            enviromentController = EnviromentController.Instance;
-        }
-
-        if(turnController == null)
-        {
-            turnController = TurnController.Instance;
-        }
-
-        characterWalker = gameObject.GetComponent<CharacterWalker>();
+            
     }
 
     // Start is called before the first frame update
     void Start()
     {
-
+        enviromentController = EnviromentController.Instance;
+        turnController = TurnController.Instance;
+        characterWalker = gameObject.GetComponent<CharacterWalker>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (TurnController.Instance.isStagePlanning() && !hasTargtet)
+        if (TurnController.Instance.isStagePlanning() && (!hasTargtet))
         {
             currentTargtet = getRandomWaklableCell();
-            Debug.Log("AI TARGTET: " + currentTargtet);
-            Debug.Log("GENERATE PATH");            
-
-            List<Vector3Int> path = GenerateWalkerPath(currentTargtet);
-            Debug.Log(path.Count);
+            List<Vector3Int> path = GenerateWalkerPath(currentTargtet);      
 
             if (path.Count > 0)
             {
-                Debug.Log("PATH FOUND: ");
+                hasTargtet = true;
                 characterWalker.updateGridPath(path);
             }
-            
+            Debug.Log("?");
         }
         else if (TurnController.Instance.isStageAction())
         {
             hasTargtet = false;
         }
-            hasTargtet = true;
+            
     }
 
     private List<Vector3Int> GenerateWalkerPath(Vector3Int target)
     {
         Vector3Int curretCell = EnviromentController.Instance.worldGrid.WorldToCell(transform.position);
         Vector3Int targterCell = enviromentController.worldGrid.WorldToCell(target);
-        Debug.Log("GET PATH");
-        List<Vector3Int> path = EnviromentController.Instance.FindPath(curretCell, target);
-        Debug.Log(" PATH" + path.Count);
+        List<Vector3Int> path = enviromentController.FindPath(curretCell, target); // EnviromentController.Instance.FindPath(curretCell, target);
+        Debug.Log("AI PATH" + path.Count);
 
         return path;
     }

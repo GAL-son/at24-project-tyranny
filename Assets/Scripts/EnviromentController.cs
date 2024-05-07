@@ -111,6 +111,12 @@ public class EnviromentController : MonoBehaviour
     public List<Vector3Int> FindPath(Vector3Int start, Vector3Int target)
     {
         List<Vector3Int> path = new List<Vector3Int>();
+
+        if(start == target)
+        {
+            return path;
+        }
+
         TilemapGameObjectManager walkables = null;
         // Select waklable Tilemap
         foreach (TilemapGameObjectManager tilemap in enviromentTileMaps)
@@ -127,21 +133,22 @@ public class EnviromentController : MonoBehaviour
             return path;
         }
 
-
-
         Vector3Int arraySize = walkables.getArraySize();
+        
         int[,,] costs = new int[arraySize.x + 1, arraySize.y + 1, arraySize.z + 1];
 
         Vector3Int startCellOffset = walkables.OffsetVector(start);
         Vector3Int targetCellOffset = walkables.OffsetVector(target);
 
+        if (!walkables.offsetInArray(startCellOffset) || !walkables.offsetInArray(targetCellOffset))
+        {
+            return path;
+        }
+
         costs = ExploreTilemap(walkables, costs, startCellOffset, targetCellOffset);
 
         if (costs[targetCellOffset.x, targetCellOffset.y, targetCellOffset.z] == 0)
         {
-/*            Debug.Log("COST OF END " + costs[targetCellOffset.x, targetCellOffset.y, targetCellOffset.z]);
-           
-            Debug.Log("UNREACHABE");*/
             return path;
         }
 
@@ -156,14 +163,12 @@ public class EnviromentController : MonoBehaviour
         List<Vector3Int> openList = new List<Vector3Int>() {
            startTile
         };
-        List<Vector3Int> closedList = new List<Vector3Int>() {  };
+        List<Vector3Int> closedList = new();
 
         cost[startTile.x, startTile.y, startTile.z] = Math.Abs(startTile.x - targetTile.x) + Math.Abs(startTile.y - targetTile.y);
 
-
         while (openList.Count > 0)
         {
-            //Debug.Log("Iteration");
             // Get node with smalest cost
             Vector3Int current = openList[0];
             
@@ -181,8 +186,6 @@ public class EnviromentController : MonoBehaviour
 
             if (current == targetTile)
             {
-               /* Debug.Log(cost[current.x, current.y, current.z]);
-                Debug.Log("FOUND");*/
                 break;
             }
 
@@ -198,24 +201,20 @@ public class EnviromentController : MonoBehaviour
             int currentCost = cost[current.x, current.y, current.z];
             foreach (var tile in neighbours)
             {
-                //Debug.Log(tile + " CHECKING");
                 if (
                     closedList.Contains(tile) ||
                     !isTileWaklable(tile, tilemap)
                 )
                 {
-                    //Debug.Log(tile + " UNWAKLABLE");
                     continue;
                 }
 
                 int newcost = currentCost + 1 + Math.Abs(tile.x - targetTile.x) + Math.Abs(tile.y - targetTile.y); ;
                 int currentTileCost = cost[tile.x, tile.y, tile.z];
-                // Debug.Log("NEW COST = " + newcost + " |OLD COST = " + currentTileCost);
 
                 if(currentTileCost == 0 || currentTileCost > newcost)
                 {
                     cost[tile.x, tile.y, tile.z] = newcost;
-                    // Debug.Log("UPDATE COST");
                     if (!openList.Contains(tile))
                     {
                         openList.Add(tile);
@@ -243,7 +242,6 @@ public class EnviromentController : MonoBehaviour
         // Calculate path from Costs
         while (true)
         {
-            // Debug.Log("WALKING BACK: " + current);
             // It means that we walked to start and path is complete
             if (current.Equals(startOffset))
             {

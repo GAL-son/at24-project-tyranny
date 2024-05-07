@@ -14,19 +14,25 @@ public class CharacterWalker : MonoBehaviour
     Vector3 targetLocation;
     bool isAtTargetLocation = true;
     int gridTarget;
+    private EnviromentController enviromentController;
+    private TurnController turnController;
 
     List<Vector3Int> gridPath = new List<Vector3Int>();
 
     // Start is called before the first frame update
     void Start()
     {
-        transform.position = EnviromentController.Instance.getCellCenter(transform.position);
+        enviromentController = EnviromentController.Instance;
+        turnController = TurnController.Instance;
+        turnController.EndTurnSubscribe(gameObject);
+
+        transform.position = enviromentController.getCellCenter(transform.position);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (TurnController.Instance.isStageAction() && !isAtTargetLocation)
+        if (turnController.isStageAction() && !isAtTargetLocation)
         {
             Vector3 dir = (targetLocation - transform.position).normalized;
 
@@ -37,13 +43,14 @@ public class CharacterWalker : MonoBehaviour
                 if (gridTarget == gridPath.Count - 1)
                 {
                     isAtTargetLocation = true;
+                    gridPath.Clear();
+                    turnController.EndTurnRequest(gameObject);
                 }
                 else
                 {
                     gridTarget++;
                     UpdateTargetLocation();
                 }
-
             }
         }
     }
@@ -55,12 +62,12 @@ public class CharacterWalker : MonoBehaviour
             return;
         }
 
-        targetLocation = EnviromentController.Instance.worldGrid.CellToWorld(gridPath[gridTarget]) + EnviromentController.Instance.worldGrid.cellSize /2 ;
+        targetLocation = enviromentController.worldGrid.CellToWorld(gridPath[gridTarget]) + EnviromentController.Instance.worldGrid.cellSize /2 ;
     }
 
     public Vector3Int getCurrentCell()
     {
-        return EnviromentController.Instance.worldGrid.WorldToCell(transform.position);
+        return enviromentController.worldGrid.WorldToCell(transform.position);
     }
 
     public void updateGridPath(List<Vector3Int> newGridPath)

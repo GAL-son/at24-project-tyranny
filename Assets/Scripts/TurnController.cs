@@ -6,7 +6,17 @@ using UnityEngine;
 
 public class TurnController : MonoBehaviour
 {
+    public enum TurnStage
+    {
+        Planning,
+        Action
+    }
+
     public static TurnController Instance { get; private set; }
+
+    private int _turn = 0;
+    private TurnStage _stage = TurnStage.Planning;
+    private Dictionary<GameObject, bool> endTurnSubscribers = new();
 
     public TurnStage Stage
     {
@@ -14,9 +24,43 @@ public class TurnController : MonoBehaviour
         private set { _stage = value; }
     }
 
+    public void EndTurnSubscribe(GameObject subscriber)
+    {
+        if (!endTurnSubscribers.ContainsKey(subscriber))
+        {
+            endTurnSubscribers.Add(subscriber, false);
+        }
+    }
+
+    public void EndTurnUnsubscribe(GameObject subscriber)
+    {
+        if (endTurnSubscribers.ContainsKey(subscriber))
+        {
+            endTurnSubscribers.Remove(subscriber);
+        }
+    }
+
+    public void EndTurnRequest(GameObject subscriber)
+    {
+        bool subscirberBool;
+        if (endTurnSubscribers.TryGetValue(subscriber, out subscirberBool))
+        {
+            if(!subscirberBool)
+            {
+                endTurnSubscribers[subscriber] = true;
+            }
+        }
+    }
+
+    public void ForceEndTurn()
+    {
+        nextStage();
+    }
+
     public void Awake()
     {
-        if (Instance != null && Instance != this) {
+        if (Instance != null && Instance != this)
+        {
             Destroy(this);
         }
         else
@@ -24,26 +68,35 @@ public class TurnController : MonoBehaviour
             Instance = this;
         }
     }
-    public enum TurnStage
-    {
-        Planning,
-        Action
-    }
 
-    private int _turn = 0;
-    private TurnStage _stage = TurnStage.Planning;
+    public void Update()
+    {
+        if (isStageAction())
+        {
+            bool canEndTurn = true;
+            foreach (var subscriber in endTurnSubscribers.Keys)
+            {
+                bool canSubscriberEnd = endTurnSubscribers[subscriber];
+
+                canEndTurn &= canSubscriberEnd;
+            }
+
+            if(canEndTurn)
+            {
+                nextStage();
+                foreach (var subscriber in endTurnSubscribers.Keys) { endTurnSubscribers[subscriber] = false;}
+            }
+        }
+    }
 
     public void nextStage()
     {
         if (_stage == TurnStage.Action)
         {
             _turn++;
-        }
-
-        if (_stage == TurnStage.Action)
-        {
             _stage = TurnStage.Planning;
-        } else
+        }
+        else
         {
             _stage = TurnStage.Action;
         }

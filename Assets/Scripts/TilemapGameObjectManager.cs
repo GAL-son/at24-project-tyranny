@@ -78,5 +78,5 @@ public class TilemapGameObjectManager : MonoBehaviour
         return (offset.x <= size.x) && (offset.y <= size.y) && (offset.z <= size.z);
     }
 
-
+    
 }
