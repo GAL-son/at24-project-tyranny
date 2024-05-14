@@ -95,6 +95,7 @@ public class TurnController : MonoBehaviour
         {
             _turn++;
             _stage = TurnStage.Planning;
+            ClearEndTrurnRequests();
         }
         else
         {
@@ -110,5 +111,13 @@ public class TurnController : MonoBehaviour
     public bool isStageAction()
     {
         return _stage == TurnStage.Action;
+    }
+
+    private void ClearEndTrurnRequests()
+    {
+        foreach (var subscriber in endTurnSubscribers.Keys)
+        {
+            endTurnSubscribers[subscriber] = false; ;
+        }
     }
 }

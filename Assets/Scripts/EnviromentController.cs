@@ -330,10 +330,15 @@ public class EnviromentController : MonoBehaviour
         return worldBounds.Contains(worldGrid.CellToWorld(cell));
     }
 
-    public Vector3 getCellCenter(Vector3 point)
+    public Vector3 getCurrentCellCenter(Vector3 point)
     {
         var cell = worldGrid.WorldToCell(point);
 
+        return worldGrid.CellToWorld(cell) + worldGrid.cellSize / 2;
+    }
+
+    public Vector3 getCellCenter(Vector3Int cell)
+    {
         return worldGrid.CellToWorld(cell) + worldGrid.cellSize / 2;
     }
 

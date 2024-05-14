@@ -26,7 +26,7 @@ public class CharacterWalker : MonoBehaviour
         turnController = TurnController.Instance;
         turnController.EndTurnSubscribe(gameObject);
 
-        transform.position = enviromentController.getCellCenter(transform.position);
+        transform.position = enviromentController.getCurrentCellCenter(transform.position);
     }
 
     // Update is called once per frame
