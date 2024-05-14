@@ -7,6 +7,7 @@ public class PathVisualization : MonoBehaviour
     public GameObject pathStraight;
     public GameObject pathLeft;
     public GameObject pathRight;
+    public GameObject pathTarget;
 
 
     private List<Vector3Int> path = new();
@@ -18,19 +19,6 @@ public class PathVisualization : MonoBehaviour
     void Start()
     {
         controller = EnviromentController.Instance;
-        path.AddRange(new List<Vector3Int>()
-        {
-            new Vector3Int(0, 0, 0),
-            new Vector3Int(1, 0, 0),
-            new Vector3Int(1, 1, 0),
-            new Vector3Int(1, 2, 0),
-            new Vector3Int(0, 2, 0),
-            new Vector3Int(-1, 2, 0),
-            new Vector3Int(-1, 3, 0),
-            new Vector3Int(-1, 4, 0),
-        });
-
-        RenderPath();
     }
 
     // Update is called once per frame
@@ -38,21 +26,20 @@ public class PathVisualization : MonoBehaviour
     {
         if (!pathUpdated)
         {
+            clearPathObjects();
             RenderPath();
         }
     }
 
     void OnDestroy()
     {
-        foreach (var item in pathObjects)
-        {
-            Destroy(item);
-        }
+        clearPathObjects();
     }
 
     public void updatePath(List<Vector3Int> path)
     {
         this.path = path;
+        pathUpdated = false;
     }
 
     private void RenderPath()
@@ -63,9 +50,21 @@ public class PathVisualization : MonoBehaviour
             Vector3Int previous = (i > 0) ? path[i - 1] : path[i];
             Vector3Int next = (i < path.Count - 1) ? path[i + 1] : path[i];
 
-            pathObjects.Add(InstatiateNextPath(previous, current, next));
+            GameObject instance = InstatiateNextPath(previous, current, next);
+            if(instance != null)
+            {
+                pathObjects.Add(instance);
+            }
         }
         pathUpdated = true;
+    }
+
+    private void clearPathObjects()
+    {
+        foreach (var item in pathObjects)
+        {
+            Destroy(item);
+        }
     }
 
     GameObject InstatiateNextPath(Vector3Int previous, Vector3Int current, Vector3Int next)
@@ -74,9 +73,13 @@ public class PathVisualization : MonoBehaviour
         worldPosition.y = 0;
 
         float yRotaton = 0;
-        if (previous == current || next == current)
+        if (previous == current)
         {
-
+            return null;
+        }
+        if (next == current)
+        {
+            return Instantiate(pathTarget, worldPosition, Quaternion.identity);
         }
         bool isStartght = previous.x == next.x || previous.y == next.y;
 
@@ -114,14 +117,12 @@ public class PathVisualization : MonoBehaviour
             {
                 yRotaton = 90;
                 arrow = pathLeft;
-                Debug.Log("UP-RIGHT-LEFT");
 
             }
             else // Right Arrow
             {
                 yRotaton = 0;
                 arrow = pathRight;
-                Debug.Log("UP-RIGHT-RIGTH");
             }
         }
         else if (previous.x < next.x && previous.y > next.y) // Down Right
@@ -130,13 +131,11 @@ public class PathVisualization : MonoBehaviour
             {
                 yRotaton = 90;
                 arrow = pathRight;
-                Debug.Log("DOWN-RIGHT-RIGHT");
             }
             else // Left Arrow
             {
                 yRotaton = 180;
                 arrow = pathLeft;
-                Debug.Log("DOWN-RIGHT-LEFT");
 
             }
         }
@@ -146,13 +145,13 @@ public class PathVisualization : MonoBehaviour
             {
                 yRotaton = 270;
                 arrow = pathRight;
-                Debug.Log("UP-LEFT-RIGTH");
+
             }
             else // Left Arrow
             {
                 yRotaton = 0;
                 arrow = pathLeft;
-                Debug.Log("UP-LEFT-LEFT");
+
             }
         }
         else if (previous.x > next.x && previous.y > next.y) // Down Left
@@ -161,13 +160,12 @@ public class PathVisualization : MonoBehaviour
             {
                 yRotaton = 270;
                 arrow = pathLeft;
-                Debug.Log("DOWN-LEFT-LEFT");
+
             }
             else // Left Arrow
             {
-                yRotaton = 0;
-                arrow = pathLeft;
-                Debug.Log("DOWN-LEFT-RIGHT");
+                yRotaton = 180;
+                arrow = pathRight;
             }
         }
 

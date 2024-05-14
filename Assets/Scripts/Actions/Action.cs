@@ -12,4 +12,5 @@ public class Action
         Cost = cost;
         ActionTarget = actionTarget;
     }
+    public Action(Vector3Int actionTarget) : this (0, actionTarget) { }
 }

@@ -153,6 +153,7 @@ public class EnviromentController : MonoBehaviour
         }
 
         path = convertCosts(costs, startCellOffset, targetCellOffset, walkables.GetArrayOffset());
+        path.Add(start);
         path.Reverse();
 
         return path;

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,15 +10,21 @@ using UnityEngineInternal;
 
 public class Planer : MonoBehaviour
 {
-    public PathVisualization prefab;
+    [Header("Actions Visualizations")]
+    public PathVisualization pathPrefab;
 
     private TurnController turnController = null;
     private EnviromentController enviromentController = null;
 
     private int actionPoints = 100;
+    private bool triggerActionRerender = false;
     private List<Action> actions = new List<Action>();
     private Action nextAction;
-    private PathVisualization pathViz;
+    private Action lastUpdateAction;
+
+    
+    private List<GameObject> vizualizations = new();
+    private GameObject currentVizualization = null;
 
     private Vector2 mousePos;
     // Start is called before the first frame update
@@ -25,32 +32,33 @@ public class Planer : MonoBehaviour
     {
         turnController = TurnController.Instance;
         enviromentController = EnviromentController.Instance;
-        pathViz = Instantiate(prefab, transform);
     }
 
     // Update is called once per frame
     void Update()
     {
         if (turnController.isStagePlanning())
-        {
+        {            
             GameObject pointed = GetPointedGameObject();
             if (pointed != null)
             {
+                lastUpdateAction = nextAction;
                 Vector3Int targetCell = enviromentController.worldGrid.WorldToCell(pointed.transform.position);
                 // If pointing at waklable enviroment
-                if (pointed.GetComponent<EnviromentTile>().isWalkable)
+                EnviromentTile tile = pointed.GetComponentInParent<EnviromentTile>();
+                if (tile != null && tile.isWalkable)
                 {
                     PlanMove(targetCell);
                 }
                 else
                 {
                     // If Targtet is somewhere far
-                    if (targetCell != actions.Last().ActionTarget)
+                    /*if (targetCell != actions.Last().ActionTarget)
                     {
                         // Move to that cell
                         PlanMove(targetCell);
                         // And then
-                    }
+                    }*/
                     // Add new Action
                     // If pointing at enemy
 
@@ -61,12 +69,11 @@ public class Planer : MonoBehaviour
             }
 
             // Update action visialization
-            if(nextAction is MoveAction)
+            UpdateCurrentVizualization();
+            if (triggerActionRerender)
             {
-                MoveAction nextMove = (MoveAction)nextAction;
-                pathViz.updatePath(nextMove.Path);
+                RerenderVisualizations();
             }
-
         }
 
         if (turnController.isStageAction())
@@ -95,7 +102,26 @@ public class Planer : MonoBehaviour
     public void UpdateMousePosition(InputAction.CallbackContext context)
     {
         mousePos = context.ReadValue<Vector2>();
+    }
 
+    public void SaveAction(InputAction.CallbackContext context)
+    {
+        if (nextAction != null && context.started)
+        {
+            if (actions.Count == 0 || actions.Last().ActionTarget != nextAction.ActionTarget)
+            {
+                Debug.Log("BEFORE ADD ACTRION" + actions.Count);
+                actions.Add(nextAction);
+                Debug.Log("AFTER ADD ACTRION" + actions.Count);
+            }
+            else
+            {
+                Debug.Log("BEFORE Delete ACTRION" + actions.Count);
+                actions.Remove(actions.Last());
+                Debug.Log("AFTER Delete ACTRION" + actions.Count);
+            }
+            triggerActionRerender = true;
+        }
     }
 
     public void AcceptPlan()
@@ -120,14 +146,81 @@ public class Planer : MonoBehaviour
 
         List<Vector3Int> path = enviromentController.FindPath(startTile, where);
 
-        if (path != null)
+        if (path != null && startTile != where)
         {
             nextAction = new MoveAction(path);
-
         }
         else
         {
-            nextAction = null;
-        }
+            nextAction = new Action(where);
+        }        
     }
+    private void RerenderVisualizations()
+    {
+        Debug.Log("RERENDER");
+        triggerActionRerender = false;
+        clearVizualizations();
+        foreach(Action action in actions)
+        {
+           vizualizations.Add(RenderVizualization(action));
+        }
+        
+    }
+
+    private GameObject RenderVizualization(Action action) 
+    {
+        if (action is MoveAction)
+        {
+            MoveAction nextMove = (MoveAction)action;
+            PathVisualization viz = Instantiate(pathPrefab, this.transform);
+            viz.updatePath(nextMove.Path);
+            return viz.gameObject;
+        }
+
+        return null;
+    }
+
+
+    private  void clearVizualizations()
+    {
+        foreach (GameObject viz in vizualizations) {
+            Destroy(viz);
+        }
+
+        vizualizations.Clear();
+    }
+
+    private void UpdateCurrentVizualization()
+    {
+        if(nextAction == null) {
+            Destroy(currentVizualization);
+            currentVizualization = null;
+        }
+
+        if(currentVizualization == null)
+        {
+            currentVizualization = RenderVizualization(nextAction);
+            return;
+        }
+
+        var t = lastUpdateAction.GetType();
+        var u = nextAction.GetType();
+
+        if (t.IsAssignableFrom(u) || u.IsAssignableFrom(t))
+        {
+            if(nextAction is MoveAction)
+            {
+                currentVizualization.GetComponent<PathVisualization>().updatePath(((MoveAction)nextAction).Path);
+            }
+        }
+        else
+        {
+            if(currentVizualization != null)
+            {
+                Destroy(currentVizualization);
+            }
+            currentVizualization = RenderVizualization(nextAction);
+        } 
+    }
+
 }
