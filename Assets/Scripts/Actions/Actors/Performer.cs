@@ -22,8 +22,9 @@ public class Performer : MonoBehaviour
     {
         if(turnController.isStageAction())
         {
-            if(isCurrentActionDone && HasNextAction())
+            if (isCurrentActionDone && HasNextAction())
             {
+                Debug.Log("THERE IS NEW ACTION");
                 Action action = actionList[nextActionIndex];
                 PerformAction(action);
             }
@@ -46,6 +47,7 @@ public class Performer : MonoBehaviour
         actionList.AddRange(actions);
         nextActionIndex = 0;
         isCurrentActionDone = true;
+        Debug.Log("ACTIONS TO DO: " + actionList.Count);
     }
 
     private void PerformAction(Action action)
@@ -53,11 +55,15 @@ public class Performer : MonoBehaviour
         isCurrentActionDone = false;
         if(action is MoveAction)
         {
-            Walker walker = GetComponent<Walker>();
+            
+            Walker walker = gameObject.GetComponent<Walker>();
             walker.OnDoneWalking += ActionDone;
+
+            Debug.Log("WALKER: " + walker);
 
             MoveAction moveAction = (MoveAction)action;
             walker.SetPath(moveAction.Path);
+            Debug.Log("MOVE TO: " + moveAction.ActionTarget);
         }
         if (action is InteractAction)
         {
@@ -81,7 +87,7 @@ public class Performer : MonoBehaviour
 
     private bool HasNextAction()
     {
-        return nextActionIndex >= actionList.Count;
+        return nextActionIndex < actionList.Count;
     }
 
 

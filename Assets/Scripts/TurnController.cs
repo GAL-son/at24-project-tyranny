@@ -84,7 +84,7 @@ public class TurnController : MonoBehaviour
             if(canEndTurn)
             {
                 nextStage();
-                foreach (var subscriber in endTurnSubscribers.Keys) { endTurnSubscribers[subscriber] = false;}
+                // ClearEndTrurnRequests();
             }
         }
     }
@@ -115,9 +115,11 @@ public class TurnController : MonoBehaviour
 
     private void ClearEndTrurnRequests()
     {
+        Dictionary<GameObject, bool> newEndTurnSubscribers = new();
         foreach (var subscriber in endTurnSubscribers.Keys)
         {
-            endTurnSubscribers[subscriber] = false; ;
+            newEndTurnSubscribers.Add(subscriber, false );
         }
+        endTurnSubscribers = new(newEndTurnSubscribers);
     }
 }

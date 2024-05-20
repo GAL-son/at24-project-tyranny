@@ -82,6 +82,7 @@ public class Planer : MonoBehaviour
             {
                 AcceptPlan();
                 actions.Clear();
+                RerenderVisualizations();
             }
         }
     }
@@ -126,6 +127,7 @@ public class Planer : MonoBehaviour
 
     public void AcceptPlan()
     {
+        Debug.Log("CALL PERFORMER WITH:" + actions.Count + " ACTIONS");
         Performer performer = GetComponent<Performer>();
         performer.setActions(actions);
     }

@@ -33,11 +33,13 @@ public class Walker : MonoBehaviour
     {
         if (turnController.isStageAction())
         {
-            if (!isAtTarget)
+            if (!isAtTarget && isNext)
             {
+                Debug.Log("NOT AT TARGET AND CAN MOVE");
                 Move();
                 if(IsAtTarget())
                 {
+                    Debug.Log("SNAP TO TAGET");
                     transform.position = nextPoint;
                     isAtTarget = true;
                 }
@@ -46,13 +48,15 @@ public class Walker : MonoBehaviour
 
             if(isAtTarget && isNext)
             {
+                Debug.Log("AT TARGET AND CAN MOVE");
                 nextCellIndex++;
                 UpdateTarget();
             }
 
             if(isAtTarget && !isNext)
             {
-                if(OnDoneWalking != null)
+                Debug.Log("AT TARGET AND CAN NOT MOVE");
+                if (OnDoneWalking != null)
                 {
                     OnDoneWalking();
                 }
@@ -62,6 +66,7 @@ public class Walker : MonoBehaviour
 
     public void SetPath(List<Vector3Int> path)
     {
+        Debug.Log("NEW WALKER PATH: " + path.Count);
         this.path = path;
         nextCellIndex = 0;
         isAtTarget = false;
@@ -71,9 +76,12 @@ public class Walker : MonoBehaviour
 
     private void UpdateTarget()
     {
-        nextPoint = enviromentController.worldGrid.CellToWorld(path[nextCellIndex]);
-        isAtTarget = false;
-        isNext = nextCellIndex == path.Count - 1;
+        isNext = IsNextTargtet();
+        if (isNext) {
+            nextPoint = enviromentController.getCellCenter(path[nextCellIndex]);
+            Debug.Log("NEXT CELL" + path[nextCellIndex] + "NEXT POINT" + nextPoint);
+            isAtTarget = false;
+        }
     }
 
     private void Move()
@@ -85,6 +93,11 @@ public class Walker : MonoBehaviour
     private bool IsAtTarget()
     {
         return Vector3.Distance(nextPoint, transform.position) < PRECISION;
+    }
+
+    private bool IsNextTargtet()
+    {
+        return nextCellIndex < path.Count;
     }
 
 
