@@ -1,3 +1,5 @@
+using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,14 +13,12 @@ using UnityEngineInternal;
 
 public class Planer : MonoBehaviour
 {
-    [Header("Actions Visualizations")]
-    public PathVisualization pathPrefab;
 
+    public int actionPointLimit = 50;
+    public int planCost = 0;
     private TurnController turnController = null;
     private EnviromentController enviromentController = null;
     private ActionVizualizer actionVizualizer;
-
-    private int actionPoints = 100;
     private bool triggerActionRerender = false;
     private List<Action> actions = new List<Action>();
     private Action nextAction;
@@ -31,7 +31,8 @@ public class Planer : MonoBehaviour
         turnController = TurnController.Instance;
         enviromentController = EnviromentController.Instance;
         actionVizualizer = gameObject.GetComponent<ActionVizualizer>();
-
+        turnController.OnTurnEnded += ResetOnTurnEnd;
+        turnController.OnPlaningEnded += AcceptPlan;
     }
 
     // Update is called once per frame
@@ -39,85 +40,47 @@ public class Planer : MonoBehaviour
     {
         if (turnController.isStagePlanning())
         {
-            /*GameObject pointed = GetPointedGameObject();
-            if (pointed != null)
-            {
-                lastUpdateAction = nextAction;
-                Vector3Int targetCell = enviromentController.worldGrid.WorldToCell(pointed.transform.position);
-                // If pointing at waklable enviroment
-                EnviromentTile tile = pointed.GetComponentInParent<EnviromentTile>();
-                if (tile != null && tile.isWalkable)
-                {
-                    PlanMove(targetCell);
-                }
-                else
-                {
-                    // If Targtet is somewhere far
-                    *//*if (targetCell != actions.Last().ActionTarget)
-                    {
-                        // Move to that cell
-                        PlanMove(targetCell);
-                        // And then
-                    }*//*
-                    // Add new Action
-                    // If pointing at enemy
-
-                    // if pointing at interactabe
-
-                    // if pointing at item
-                }
-            }*/
-
-            // Update action visialization
             UpdateActionsVizualization();
-
         }
 
         if (turnController.isStageAction())
         {
+            /*Debug.Log("ON ACTION ACTIONS COUNT PLANER" + actions.Count);
             if (actions.Count != 0)
             {
                 AcceptPlan();
-                actions.Clear();
                 actionVizualizer.RerenderVisualizations(actions);
-            }
+                actions.Clear();
+            }*/
         }
     }
-
- /*   private GameObject GetPointedGameObject()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-        {
-            return hit.transform.gameObject;
-        }
-
-        return null;
-    }
-
-    public void UpdateMousePosition(InputAction.CallbackContext context)
-    {
-        mousePos = context.ReadValue<Vector2>();
-    }*/
 
     public void SaveAction()
     {
+        if(nextAction == null) {
+            return;
+        }
+
         if (actions.Count == 0 || actions.Last().ActionTarget != nextAction.ActionTarget)
         {
-            actions.Add(nextAction);
+            if(planCost + nextAction.Cost <= actionPointLimit)
+            {
+                actions.Add(nextAction);
+            }
         }
         else
         {
             actions.Remove(actions.Last());
         }
         triggerActionRerender = true;
+        Debug.Log(actions.Count);
+        RecalculateTotalCost();
     }
 
-    public void AcceptPlan()
+    public void SendPlan()
     {
         Performer performer = GetComponent<Performer>();
+        Debug.Log("SEND ACTIONS: " + actions.Count);
         performer.setActions(actions);
     }
 
@@ -139,7 +102,24 @@ public class Planer : MonoBehaviour
 
         if (path != null && startTile != where)
         {
-            nextAction = new MoveAction(path);
+            MoveAction newAction = new MoveAction(path);
+            int newCost = newAction.Cost;
+
+            if (planCost + newCost > actionPointLimit)
+            {
+                int costDiference = (planCost + newCost) - actionPointLimit;
+                int costPerCell = newCost / path.Count;
+                int movesOver = costDiference / costPerCell;
+
+                path.RemoveRange(Math.Max(0, path.Count - movesOver), Math.Min(movesOver, path.Count));
+
+                if (path.Count != 0)
+                {
+                    newAction = new MoveAction(path);
+                }
+
+            }
+            nextAction = newAction;
         }
         else
         {
@@ -149,12 +129,46 @@ public class Planer : MonoBehaviour
 
     private void UpdateActionsVizualization()
     {
-        actionVizualizer.UpdateCurrentVizualization(nextAction, lastUpdateAction);
+        actionVizualizer.UpdateCurrentVizualization(nextAction);
         if (triggerActionRerender)
         {
             actionVizualizer.RerenderVisualizations(actions);
             triggerActionRerender = false;
         }
+    }
+
+    public void ClearPlanedAction()
+    {
+        nextAction = null;
+    }
+
+    private void RecalculateTotalCost()
+    {
+        int sum = 0;
+
+        foreach (var action in actions)
+        {
+            sum += action.Cost;
+        }
+
+        planCost = sum;
+    }
+
+    public void ResetOnTurnEnd()
+    {
+        triggerActionRerender = true;
+        Debug.Log("END RESET");
+        ClearPlanedAction();
+        actions.Clear();
+        RecalculateTotalCost();
+        UpdateActionsVizualization();
+    }
+
+    public void AcceptPlan()
+    {
+        SendPlan();
+        actionVizualizer.RerenderVisualizations(actions);
+        actions.Clear();
     }
 
 }

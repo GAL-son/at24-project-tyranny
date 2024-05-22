@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -6,6 +7,12 @@ using UnityEngine;
 
 public class TurnController : MonoBehaviour
 {
+    public delegate void TurnEnded();
+    public event TurnEnded OnTurnEnded;
+
+    public delegate void PlaningEnded();
+    public event PlaningEnded OnPlaningEnded;
+
     public enum TurnStage
     {
         Planning,
@@ -54,6 +61,7 @@ public class TurnController : MonoBehaviour
 
     public void ForceEndTurn()
     {
+        Debug.Log("FORCE END");
         nextStage();
     }
 
@@ -73,6 +81,7 @@ public class TurnController : MonoBehaviour
     {
         if (isStageAction())
         {
+            Debug.Log("endTurnSubscribers" + endTurnSubscribers.Count);
             bool canEndTurn = true;
             foreach (var subscriber in endTurnSubscribers.Keys)
             {
@@ -84,21 +93,31 @@ public class TurnController : MonoBehaviour
             if(canEndTurn)
             {
                 nextStage();
-                // ClearEndTrurnRequests();
             }
         }
     }
 
     public void nextStage()
     {
-        if (_stage == TurnStage.Action)
+        Debug.Log("CURRENT STAGE" + _stage);
+        if (isStageAction())
         {
+            if (OnTurnEnded != null)
+            {
+                OnTurnEnded();
+            }
             _turn++;
             _stage = TurnStage.Planning;
             ClearEndTrurnRequests();
+            Debug.Log("END TURN");
+            
         }
         else
         {
+            if(OnPlaningEnded != null)
+            {
+                OnPlaningEnded();
+            }
             _stage = TurnStage.Action;
         }
     }
@@ -121,5 +140,13 @@ public class TurnController : MonoBehaviour
             newEndTurnSubscribers.Add(subscriber, false );
         }
         endTurnSubscribers = new(newEndTurnSubscribers);
+    }
+
+    public void endPlaning()
+    {
+        if(isStagePlanning())
+        {
+            nextStage();
+        }
     }
 }

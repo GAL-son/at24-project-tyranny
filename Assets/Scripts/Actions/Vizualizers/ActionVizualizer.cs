@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ActionVizualizer : MonoBehaviour
@@ -9,21 +10,11 @@ public class ActionVizualizer : MonoBehaviour
 
     private List<GameObject> vizualizations = new();
     private GameObject currentVizualization = null;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    private Action actionMemory = null;
 
     public void RerenderVisualizations(List<Action> actions)
     {
-        Debug.Log("RERENDER");
+        Debug.Log(actions.Count); 
         clearVizualizations();
         foreach (Action action in actions)
         {
@@ -56,12 +47,13 @@ public class ActionVizualizer : MonoBehaviour
     }
 
 
-    public void UpdateCurrentVizualization(Action nextAction, Action previousAction)
-    {
+    public void UpdateCurrentVizualization(Action nextAction)
+    {        
         if (nextAction == null)
         {
             Destroy(currentVizualization);
             currentVizualization = null;
+            return;
         }
 
         if (currentVizualization == null)
@@ -69,24 +61,47 @@ public class ActionVizualizer : MonoBehaviour
             currentVizualization = RenderVizualization(nextAction);
             return;
         }
+                
+        bool actionUpdated = false;
 
-        var t = previousAction.GetType();
-        var u = nextAction.GetType();
-
-        if (t.IsAssignableFrom(u) || u.IsAssignableFrom(t))
+        if (actionMemory != null)
         {
-            if (nextAction is MoveAction)
+            var t = actionMemory.GetType();
+            var u = nextAction.GetType();
+            if (t.IsAssignableFrom(u) || u.IsAssignableFrom(t))
             {
-                currentVizualization.GetComponent<PathVisualization>().updatePath(((MoveAction)nextAction).Path);
+                UpdateCurrentVizualizationData(nextAction);
+                actionUpdated = true;
             }
         }
-        else
+
+        if(!actionUpdated)
         {
-            if (currentVizualization != null)
-            {
-                Destroy(currentVizualization);
-            }
-            currentVizualization = RenderVizualization(nextAction);
+            ReplaceCurrentVizualization(nextAction);
         }
+
+        actionMemory = nextAction;
+    }
+
+    private void UpdateCurrentVizualizationData(Action nextAction)
+    {
+        if (nextAction is MoveAction)
+        {
+            currentVizualization.GetComponent<PathVisualization>().updatePath(((MoveAction)nextAction).Path);
+        }
+    }
+
+    private void ReplaceCurrentVizualization(Action nextAction)
+    {
+        if (currentVizualization != null)
+        {
+            Destroy(currentVizualization);
+        }
+        currentVizualization = RenderVizualization(nextAction);
+    }
+
+    private bool MustUpdateVizuationData()
+    {
+        return false;
     }
 }

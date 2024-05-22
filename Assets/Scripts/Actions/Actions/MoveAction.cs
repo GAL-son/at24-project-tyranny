@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MoveAction : Action
 {
-    const int COST_PER_CELL = 5;
+    public const int COST_PER_CELL = 5;
 
     protected List<Vector3Int> path;
 

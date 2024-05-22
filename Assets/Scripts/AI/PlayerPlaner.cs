@@ -55,6 +55,7 @@ public class PlayerPlaner : MonoBehaviour
             }
             else
             {
+                planer.ClearPlanedAction();
                 // If Targtet is somewhere far
                 /*if (targetCell != actions.Last().ActionTarget)
                 {

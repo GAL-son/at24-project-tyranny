@@ -35,11 +35,9 @@ public class Walker : MonoBehaviour
         {
             if (!isAtTarget && isNext)
             {
-                Debug.Log("NOT AT TARGET AND CAN MOVE");
                 Move();
                 if(IsAtTarget())
                 {
-                    Debug.Log("SNAP TO TAGET");
                     transform.position = nextPoint;
                     isAtTarget = true;
                 }
@@ -48,17 +46,16 @@ public class Walker : MonoBehaviour
 
             if(isAtTarget && isNext)
             {
-                Debug.Log("AT TARGET AND CAN MOVE");
                 nextCellIndex++;
                 UpdateTarget();
             }
 
             if(isAtTarget && !isNext)
             {
-                Debug.Log("AT TARGET AND CAN NOT MOVE");
                 if (OnDoneWalking != null)
                 {
                     OnDoneWalking();
+                    OnDoneWalking = null;
                 }
             }
         }
@@ -66,7 +63,6 @@ public class Walker : MonoBehaviour
 
     public void SetPath(List<Vector3Int> path)
     {
-        Debug.Log("NEW WALKER PATH: " + path.Count);
         this.path = path;
         nextCellIndex = 0;
         isAtTarget = false;
@@ -79,7 +75,6 @@ public class Walker : MonoBehaviour
         isNext = IsNextTargtet();
         if (isNext) {
             nextPoint = enviromentController.getCellCenter(path[nextCellIndex]);
-            Debug.Log("NEXT CELL" + path[nextCellIndex] + "NEXT POINT" + nextPoint);
             isAtTarget = false;
         }
     }
