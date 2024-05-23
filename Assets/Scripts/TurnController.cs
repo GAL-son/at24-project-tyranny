@@ -61,7 +61,6 @@ public class TurnController : MonoBehaviour
 
     public void ForceEndTurn()
     {
-        Debug.Log("FORCE END");
         nextStage();
     }
 
@@ -81,7 +80,6 @@ public class TurnController : MonoBehaviour
     {
         if (isStageAction())
         {
-            Debug.Log("endTurnSubscribers" + endTurnSubscribers.Count);
             bool canEndTurn = true;
             foreach (var subscriber in endTurnSubscribers.Keys)
             {
@@ -99,7 +97,6 @@ public class TurnController : MonoBehaviour
 
     public void nextStage()
     {
-        Debug.Log("CURRENT STAGE" + _stage);
         if (isStageAction())
         {
             if (OnTurnEnded != null)
@@ -109,7 +106,6 @@ public class TurnController : MonoBehaviour
             _turn++;
             _stage = TurnStage.Planning;
             ClearEndTrurnRequests();
-            Debug.Log("END TURN");
             
         }
         else

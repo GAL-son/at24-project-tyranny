@@ -340,7 +340,25 @@ public class EnviromentController : MonoBehaviour
 
     public Vector3 getCellCenter(Vector3Int cell)
     {
-        return worldGrid.CellToWorld(cell) + worldGrid.cellSize / 2;
+        return worldGrid.CellToWorld(cell) + worldGrid.cellSize / 2;        
+    }
+
+    public C GetComponentAtCell<C>(Vector3Int cell) where C: Component
+    {
+        C component = null;
+
+        List<GameObject> objects = GetGameObjectsAt(cell);
+
+        foreach (GameObject obj in objects)
+        {
+            component = obj.GetComponent<C>();
+            if(component != null)
+            {
+                break;
+            }
+        }
+
+        return component;
     }
 
 

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,7 +14,7 @@ using UnityEngineInternal;
 
 public class Planer : MonoBehaviour
 {
-
+    public bool displayCurrentAction = true;
     public int actionPointLimit = 50;
     public int planCost = 0;
     private TurnController turnController = null;
@@ -45,13 +46,6 @@ public class Planer : MonoBehaviour
 
         if (turnController.isStageAction())
         {
-            /*Debug.Log("ON ACTION ACTIONS COUNT PLANER" + actions.Count);
-            if (actions.Count != 0)
-            {
-                AcceptPlan();
-                actionVizualizer.RerenderVisualizations(actions);
-                actions.Clear();
-            }*/
         }
     }
 
@@ -80,7 +74,6 @@ public class Planer : MonoBehaviour
     public void SendPlan()
     {
         Performer performer = GetComponent<Performer>();
-        Debug.Log("SEND ACTIONS: " + actions.Count);
         performer.setActions(actions);
     }
 
@@ -100,7 +93,9 @@ public class Planer : MonoBehaviour
 
         List<Vector3Int> path = enviromentController.FindPath(startTile, where);
 
-        if (path != null && startTile != where)
+       
+
+        if (path.Count != 0 && startTile != where)
         {
             MoveAction newAction = new MoveAction(path);
             int newCost = newAction.Cost;
@@ -129,7 +124,10 @@ public class Planer : MonoBehaviour
 
     private void UpdateActionsVizualization()
     {
-        actionVizualizer.UpdateCurrentVizualization(nextAction);
+        if(displayCurrentAction)
+        {
+            actionVizualizer.UpdateCurrentVizualization(nextAction);
+        }
         if (triggerActionRerender)
         {
             actionVizualizer.RerenderVisualizations(actions);
@@ -169,6 +167,11 @@ public class Planer : MonoBehaviour
         SendPlan();
         actionVizualizer.RerenderVisualizations(actions);
         actions.Clear();
+    }
+
+    public bool isCurrentActionValid()
+    {
+        return nextAction != null;
     }
 
 }

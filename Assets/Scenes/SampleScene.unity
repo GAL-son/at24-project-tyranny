@@ -8827,7 +8827,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5542005256044611806, guid: dfd48730621306443b642f6f977aa48d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7793901062723357150, guid: dfd48730621306443b642f6f977aa48d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -14631,6 +14631,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ac13d07fd1bab542b656fe2f5234687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  patrolPointsCount: 4
 --- !u!114 &1835310676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14682,7 +14683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d38da4ca31a138c4a9744cd71ac6ceef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0.5
+  moveSpeed: 1
 --- !u!1001 &1838726084
 PrefabInstance:
   m_ObjectHideFlags: 0
