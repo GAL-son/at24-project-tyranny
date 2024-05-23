@@ -14,7 +14,6 @@ public class ActionVizualizer : MonoBehaviour
 
     public void RerenderVisualizations(List<Action> actions)
     {
-        Debug.Log(actions.Count); 
         clearVizualizations();
         foreach (Action action in actions)
         {

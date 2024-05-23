@@ -82,9 +82,11 @@ public class Walker : MonoBehaviour
     private void Move()
     {
         Vector3 direction = (nextPoint - transform.position).normalized;
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 40f);
         transform.position += direction * moveSpeed * Time.deltaTime;
     }
 
+    
     private bool IsAtTarget()
     {
         return Vector3.Distance(nextPoint, transform.position) < PRECISION;

@@ -8,10 +8,12 @@ public class EnemyPlaner : MonoBehaviour
     private TurnController turnController = null;
     private EnviromentController enviromentController = null;
     private Planer planer = null;
+    public Detector detector = null;
 
     private List<Vector3Int> patrolPoints = new();
     private int currentPatrolPointIndex = 0;
     bool isChasing = false;
+    Vector3Int chaseTarget;
     bool canPlan = true;
 
     // Start is called before the first frame update
@@ -20,8 +22,15 @@ public class EnemyPlaner : MonoBehaviour
         turnController = TurnController.Instance;
         turnController.OnTurnEnded += onTurnEnd;
 
+        detector = GetComponent<Detector>();
+        if(detector != null )
+        {
+            detector.OnBoxDetection += OnBoxDetection;
+        }
+
         enviromentController = EnviromentController.Instance;
         planer = gameObject.GetComponent<Planer>();
+
         GeneratePatrolRoute();
     }
 
@@ -32,7 +41,7 @@ public class EnemyPlaner : MonoBehaviour
         {
             if (isChasing)
             {
-
+                UpdateChaseRoute();
             }
             else
             {
@@ -40,6 +49,7 @@ public class EnemyPlaner : MonoBehaviour
             }
             canPlan = false;
         }
+
     }
 
     public void onTurnEnd()
@@ -94,7 +104,6 @@ public class EnemyPlaner : MonoBehaviour
 
     private void UpdatePatrolPath()
     {
-        Debug.Log("UPDATE PATROL PATH");
         planer.PlanMove(CurrentPathTarget());
 
         if(planer.isCurrentActionValid())
@@ -103,8 +112,28 @@ public class EnemyPlaner : MonoBehaviour
         }
     }
 
+    private void UpdateChaseRoute()
+    {
+        planer.PlanMove(chaseTarget);
+        if (planer.isCurrentActionValid())
+        {
+            planer.SaveAction();
+        }
+    }
+
     private Vector3Int CurrentPathTarget()
     {
         return patrolPoints[currentPatrolPointIndex];
+    }
+
+    public void OnBoxDetection(GameObject player)
+    {
+        isChasing = true;
+        chaseTarget = enviromentController.worldGrid.WorldToCell(player.transform.position);
+
+        if(turnController.isStageAction())
+        {
+            turnController.ForceEndTurn();
+        }
     }
 }

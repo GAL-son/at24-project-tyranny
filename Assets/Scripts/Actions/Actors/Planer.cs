@@ -67,7 +67,6 @@ public class Planer : MonoBehaviour
             actions.Remove(actions.Last());
         }
         triggerActionRerender = true;
-        Debug.Log(actions.Count);
         RecalculateTotalCost();
     }
 
@@ -155,7 +154,6 @@ public class Planer : MonoBehaviour
     public void ResetOnTurnEnd()
     {
         triggerActionRerender = true;
-        Debug.Log("END RESET");
         ClearPlanedAction();
         actions.Clear();
         RecalculateTotalCost();
