@@ -13,16 +13,43 @@ public class TurnController : MonoBehaviour
     public delegate void PlaningEnded();
     public event PlaningEnded OnPlaningEnded;
 
+    private const int RegularActionPoints = 50;
+    private const int AtackActionPoints = 20;
+
     public enum TurnStage
     {
         Planning,
         Action
     }
 
+    public enum ActionStageType
+    {
+        Regular,
+        Atack
+    }
+
+    public int GetActionPoints()
+    {
+        if(actionStage == ActionStageType.Atack)
+        {
+            return AtackActionPoints;
+        }
+        else
+        {
+            return RegularActionPoints;
+        }
+    }
+
+    public void setActionType(ActionStageType type)
+    {
+        this.actionStage = type;
+    }
+
     public static TurnController Instance { get; private set; }
 
     private int _turn = 0;
     private TurnStage _stage = TurnStage.Planning;
+    private ActionStageType actionStage = ActionStageType.Regular;
     private Dictionary<GameObject, bool> endTurnSubscribers = new();
 
     public TurnStage Stage

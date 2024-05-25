@@ -28,10 +28,7 @@ public class EnviromentController : MonoBehaviour
         {
             Instance = this;
         }
-    }
 
-    private void Start()
-    {
         enviromentTileMaps = new List<TilemapGameObjectManager>();
 
         foreach (Transform tilemap in worldGrid.GetComponent<Transform>())
@@ -43,6 +40,11 @@ public class EnviromentController : MonoBehaviour
                 enviromentTileMaps.Add(tm);
             }
         };
+    }
+
+    private void Start()
+    {
+       
     }
 
 
@@ -65,7 +67,7 @@ public class EnviromentController : MonoBehaviour
 
     public BoundsInt GetTotalCellBounds()
     {
-        if (enviromentTileMaps.Count == 0)
+        if (enviromentTileMaps == null || enviromentTileMaps.Count == 0)
         {
             return new BoundsInt();
         }

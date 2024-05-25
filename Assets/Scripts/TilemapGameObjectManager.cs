@@ -15,12 +15,18 @@ public class TilemapGameObjectManager : MonoBehaviour
     GameObject[,,] tiles;
 
     // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
         tilemap = GetComponent<Tilemap>();
         tiles = tilemap.GetArrangedGameObjects();
         cellBounds = tilemap.GetGameObjectTilemapCellBounds();
         worldBounds = tilemap.GetGameObjectTilemapBounds();
+
+    }
+    void Start()
+    {
+        
     }
 
     public GameObject GetObjectAtCell(Vector3Int cell)

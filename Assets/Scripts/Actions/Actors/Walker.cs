@@ -26,6 +26,7 @@ public class Walker : MonoBehaviour
     {
         turnController = TurnController.Instance;
         enviromentController = EnviromentController.Instance;
+        turnController.OnTurnEnded += AlignToCurrent;
     }
 
     // Update is called once per frame
@@ -38,7 +39,7 @@ public class Walker : MonoBehaviour
                 Move();
                 if(IsAtTarget())
                 {
-                    transform.position = nextPoint;
+                    AlignToCurrent();
                     isAtTarget = true;
                 }
 
@@ -95,6 +96,10 @@ public class Walker : MonoBehaviour
     private bool IsNextTargtet()
     {
         return nextCellIndex < path.Count;
+    }
+    private void AlignToCurrent()
+    {
+        transform.position = nextPoint;
     }
 
 

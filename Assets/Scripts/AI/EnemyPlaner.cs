@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyPlaner : MonoBehaviour
@@ -7,8 +8,10 @@ public class EnemyPlaner : MonoBehaviour
     public int patrolPointsCount = 4;
     private TurnController turnController = null;
     private EnviromentController enviromentController = null;
+    private EnemyControler enemyControler = null;
     private Planer planer = null;
     public Detector detector = null;
+    public AlertedAnimation alert = null;
 
     private List<Vector3Int> patrolPoints = new();
     private int currentPatrolPointIndex = 0;
@@ -19,6 +22,9 @@ public class EnemyPlaner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        alert = GetComponentInChildren<AlertedAnimation>();
+        alert.Deactivate();
+        
         turnController = TurnController.Instance;
         turnController.OnTurnEnded += onTurnEnd;
 
@@ -28,10 +34,17 @@ public class EnemyPlaner : MonoBehaviour
             detector.OnBoxDetection += OnBoxDetection;
         }
 
+
         enviromentController = EnviromentController.Instance;
         planer = gameObject.GetComponent<Planer>();
 
+        enemyControler = EnemyControler.Instance;
+        Debug.Log(enemyControler);
+        enemyControler.AssignToControler(this);
+
         GeneratePatrolRoute();
+
+        
     }
 
     // Update is called once per frame
@@ -82,7 +95,6 @@ public class EnemyPlaner : MonoBehaviour
 
     private void updatePatrolLoop()
     {
-
         Vector3Int currentLocation = enviromentController.worldGrid.WorldToCell(transform.position);
 
         if (currentLocation == CurrentPathTarget())
@@ -127,13 +139,32 @@ public class EnemyPlaner : MonoBehaviour
     }
 
     public void OnBoxDetection(GameObject player)
-    {
-        isChasing = true;
-        chaseTarget = enviromentController.worldGrid.WorldToCell(player.transform.position);
-
-        if(turnController.isStageAction())
+    {       
+        enemyControler.EnemyDetected(player.transform.position);
+        if (turnController.isStageAction() && !isChasing)
         {
+
             turnController.ForceEndTurn();
         }
+    }
+
+    public void UpdateChaseTargtet(Vector3Int chaseTarget)
+    {
+        if(isChasing)
+        {
+            this.chaseTarget = chaseTarget;
+        }
+    }
+
+    public void EnterChase()
+    {
+        isChasing = true;
+        alert.Activate();
+    }
+
+    public void ExitChase()
+    {
+        isChasing = false;
+        alert.Deactivate();
     }
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 845260381826041696}
   m_Layer: 0
   m_Name: Floor
-  m_TagString: Untagged
+  m_TagString: Enviroment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isWalkable: 1
+  tileHeight: 0
 --- !u!1 &5051897918978024343
 GameObject:
   m_ObjectHideFlags: 0

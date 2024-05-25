@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngineInternal;
 
 [RequireComponent(typeof(Performer))]
@@ -15,7 +16,6 @@ using UnityEngineInternal;
 public class Planer : MonoBehaviour
 {
     public bool displayCurrentAction = true;
-    public int actionPointLimit = 50;
     public int planCost = 0;
     private TurnController turnController = null;
     private EnviromentController enviromentController = null;
@@ -57,7 +57,7 @@ public class Planer : MonoBehaviour
 
         if (actions.Count == 0 || actions.Last().ActionTarget != nextAction.ActionTarget)
         {
-            if(planCost + nextAction.Cost <= actionPointLimit)
+            if(planCost + nextAction.Cost <= turnController.GetActionPoints())
             {
                 actions.Add(nextAction);
             }
@@ -73,7 +73,14 @@ public class Planer : MonoBehaviour
     public void SendPlan()
     {
         Performer performer = GetComponent<Performer>();
-        performer.setActions(actions);
+        if(actions.Count == 0)
+        {
+            performer.DoNothing();
+        }
+        else
+        {
+            performer.setActions(actions);
+        }
     }
 
     public void PlanMove(Vector3Int where)
@@ -99,9 +106,9 @@ public class Planer : MonoBehaviour
             MoveAction newAction = new MoveAction(path);
             int newCost = newAction.Cost;
 
-            if (planCost + newCost > actionPointLimit)
+            if (planCost + newCost > turnController.GetActionPoints())
             {
-                int costDiference = (planCost + newCost) - actionPointLimit;
+                int costDiference = (planCost + newCost) - turnController.GetActionPoints();
                 int costPerCell = newCost / path.Count;
                 int movesOver = costDiference / costPerCell;
 

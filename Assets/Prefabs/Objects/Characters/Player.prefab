@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 2194944973019326504}
   - component: {fileID: 6970176366291434182}
   - component: {fileID: 3813408057865676860}
+  - component: {fileID: 6037877526335842929}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -184,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d38da4ca31a138c4a9744cd71ac6ceef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1
+  moveSpeed: 1.2
 --- !u!114 &5466860851049608942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,7 +210,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56ada990092218e4abe5a494d7d7e298, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathPrefab: {fileID: 9096940572315814198, guid: 00360162187ac0148b957bd3bbb92d39, type: 3}
+  displayCurrentAction: 1
+  actionPointLimit: 50
+  planCost: 0
 --- !u!114 &6970176366291434182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,3 +238,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8aa0c476b7f561640905f0e62519203c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mouse:
+    serializedVersion: 2
+    m_Bits: 51
+--- !u!136 &6037877526335842929
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8994171566201022986}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}

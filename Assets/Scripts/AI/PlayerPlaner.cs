@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Planer))]
 public class PlayerPlaner : MonoBehaviour
 {
+    public LayerMask mouse;
+
     private TurnController turnController = null;
     private EnviromentController enviromentController = null;
     private Planer planer = null;
@@ -78,7 +80,7 @@ public class PlayerPlaner : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, mouse))
         {
             return hit.transform.gameObject;
         }

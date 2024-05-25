@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5721568478665366616}
   m_Layer: 0
   m_Name: Wall block
-  m_TagString: Untagged
+  m_TagString: Enviroment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isWalkable: 0
+  tileHeight: 0
 --- !u!1 &2644534085185655822
 GameObject:
   m_ObjectHideFlags: 0

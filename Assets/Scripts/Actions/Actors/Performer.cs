@@ -19,8 +19,7 @@ public class Performer : MonoBehaviour
     {
         turnController = TurnController.Instance;
         turnController.EndTurnSubscribe(gameObject);
-        turnController.OnTurnEnded += ClearActions;
-        
+        turnController.OnTurnEnded += ClearActions;        
     }
 
     // Update is called once per frame
@@ -29,9 +28,14 @@ public class Performer : MonoBehaviour
         if(turnController.isStagePlanning())
         {
             canUpdateActions = true;
+            canUpdateActions = true;
         }
         if(turnController.isStageAction())
         {
+            if(gameObject.tag != "Player")
+            {
+                // Debug.Log("HasNextAction" + HasNextAction());
+            }
             if (isCurrentActionDone && HasNextAction())
             {
                 Action action = actionList[nextActionIndex];
@@ -52,11 +56,14 @@ public class Performer : MonoBehaviour
 
     public void setActions(List<Action> actions)
     {
-        actionList.Clear();
-        actionList.AddRange(actions);
-        nextActionIndex = 0;
-        isCurrentActionDone = true;
-        canUpdateActions = false;
+        if(canUpdateActions)
+        {
+            actionList.Clear();
+            actionList.AddRange(actions);
+            nextActionIndex = 0;
+            isCurrentActionDone = true;
+            canUpdateActions = false;
+        }
     }
 
     private void PerformAction(Action action)
@@ -69,18 +76,23 @@ public class Performer : MonoBehaviour
             MoveAction moveAction = (MoveAction)action;
             walker.SetPath(moveAction.Path);
         }
-        if (action is InteractAction)
+        else if (action is InteractAction)
         {
 
         }
-        if (action is FightAction)
+        else if(action is FightAction)
         {
 
         }
-        if(action is ItemAction)
+        else if(action is ItemAction)
         {
 
         }
+        else
+        {
+            ActionDone();
+        }
+        
     }
 
     private void ActionDone()
@@ -98,7 +110,15 @@ public class Performer : MonoBehaviour
     {
         actionList.Clear();
         isCurrentActionDone= false;
+        canUpdateActions = true;
         nextActionIndex= 0;
+        Debug.Log("CLEAR CAN UPDATE" + HasNextAction());
+    }
+
+    public void DoNothing()
+    {
+        Debug.Log("DO NOTHING");
+        ClearActions();
     }
 
 
