@@ -49,9 +49,11 @@ public class Performer : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
+        Debug.Log(gameObject);
         turnController.EndTurnUnsubscribe(gameObject);
+        Debug.Log("AFTER");
     }
 
     public void setActions(List<Action> actions)
@@ -112,12 +114,10 @@ public class Performer : MonoBehaviour
         isCurrentActionDone= false;
         canUpdateActions = true;
         nextActionIndex= 0;
-        Debug.Log("CLEAR CAN UPDATE" + HasNextAction());
     }
 
     public void DoNothing()
     {
-        Debug.Log("DO NOTHING");
         ClearActions();
     }
 

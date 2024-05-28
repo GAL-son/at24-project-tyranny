@@ -32,8 +32,7 @@ public class Planer : MonoBehaviour
         turnController = TurnController.Instance;
         enviromentController = EnviromentController.Instance;
         actionVizualizer = gameObject.GetComponent<ActionVizualizer>();
-        turnController.OnTurnEnded += ResetOnTurnEnd;
-        turnController.OnPlaningEnded += AcceptPlan;
+        Register();
     }
 
     // Update is called once per frame
@@ -50,10 +49,16 @@ public class Planer : MonoBehaviour
     }
 
     public void SaveAction()
-    {
+    {   
+        if(gameObject.tag == "Player")
+        {
+            Debug.Log("PLAYER CREATES ACTION");
+        }
         if(nextAction == null) {
             return;
         }
+
+        Debug.Log(nextAction.ToString());
 
         if (actions.Count == 0 || actions.Last().ActionTarget != nextAction.ActionTarget)
         {
@@ -80,6 +85,14 @@ public class Planer : MonoBehaviour
         else
         {
             performer.setActions(actions);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if(gameObject.tag == "Player")
+        {
+            Debug.Log("Player planer destroyed");
         }
     }
 
@@ -160,11 +173,13 @@ public class Planer : MonoBehaviour
 
     public void ResetOnTurnEnd()
     {
+        Debug.Log("RESET ON END");
         triggerActionRerender = true;
         ClearPlanedAction();
         actions.Clear();
         RecalculateTotalCost();
         UpdateActionsVizualization();
+        Debug.Log(actions.Count);
     }
 
     public void AcceptPlan()
@@ -179,4 +194,9 @@ public class Planer : MonoBehaviour
         return nextAction != null;
     }
 
+    public void Register()
+    {
+        turnController.OnTurnEnded += ResetOnTurnEnd;
+        turnController.OnPlaningEnded += AcceptPlan;
+    }
 }

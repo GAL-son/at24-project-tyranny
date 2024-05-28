@@ -37,7 +37,7 @@ public class PlayerPlaner : MonoBehaviour
     public void SaveAction(InputAction.CallbackContext context)
     {
         //nextAction != null && 
-        if (context.started)
+        if (context.started && turnController.isStagePlanning())
         {
             planer.SaveAction();
         }
@@ -87,5 +87,7 @@ public class PlayerPlaner : MonoBehaviour
 
         return null;
     }
+
+
 
 }

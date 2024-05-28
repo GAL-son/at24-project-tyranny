@@ -30,7 +30,7 @@ public class TurnController : MonoBehaviour
 
     public int GetActionPoints()
     {
-        if(actionStage == ActionStageType.Atack)
+        if (actionStage == ActionStageType.Atack)
         {
             return AtackActionPoints;
         }
@@ -79,7 +79,7 @@ public class TurnController : MonoBehaviour
         bool subscirberBool;
         if (endTurnSubscribers.TryGetValue(subscriber, out subscirberBool))
         {
-            if(!subscirberBool)
+            if (!subscirberBool)
             {
                 endTurnSubscribers[subscriber] = true;
             }
@@ -115,7 +115,7 @@ public class TurnController : MonoBehaviour
                 canEndTurn &= canSubscriberEnd;
             }
 
-            if(canEndTurn)
+            if (canEndTurn)
             {
                 nextStage();
             }
@@ -133,11 +133,11 @@ public class TurnController : MonoBehaviour
             _turn++;
             _stage = TurnStage.Planning;
             ClearEndTrurnRequests();
-            
+
         }
         else
         {
-            if(OnPlaningEnded != null)
+            if (OnPlaningEnded != null)
             {
                 OnPlaningEnded();
             }
@@ -160,16 +160,24 @@ public class TurnController : MonoBehaviour
         Dictionary<GameObject, bool> newEndTurnSubscribers = new();
         foreach (var subscriber in endTurnSubscribers.Keys)
         {
-            newEndTurnSubscribers.Add(subscriber, false );
+            newEndTurnSubscribers.Add(subscriber, false);
         }
         endTurnSubscribers = new(newEndTurnSubscribers);
     }
 
     public void endPlaning()
     {
-        if(isStagePlanning())
+        if (isStagePlanning())
         {
             nextStage();
         }
+    }
+    public void RestartTurns()
+    {
+        _turn = 0;
+        _stage = TurnStage.Planning;
+        actionStage = ActionStageType.Regular;
+        OnPlaningEnded = null;
+        OnTurnEnded = null;
     }
 }

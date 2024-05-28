@@ -18,7 +18,6 @@ public class BoxDetector : MonoBehaviour
     {
         coliderLength = GetComponent<BoxCollider>().size.z;
         detector = GetComponentInParent<Detector>();
-        Debug.Log(detector);
     }
 
     // Update is called once per frame

@@ -39,12 +39,9 @@ public class EnemyPlaner : MonoBehaviour
         planer = gameObject.GetComponent<Planer>();
 
         enemyControler = EnemyControler.Instance;
-        Debug.Log(enemyControler);
         enemyControler.AssignToControler(this);
 
-        GeneratePatrolRoute();
-
-        
+        GeneratePatrolRoute();        
     }
 
     // Update is called once per frame
