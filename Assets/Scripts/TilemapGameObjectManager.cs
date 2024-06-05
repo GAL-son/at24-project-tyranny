@@ -18,15 +18,20 @@ public class TilemapGameObjectManager : MonoBehaviour
 
     private void Awake()
     {
-        tilemap = GetComponent<Tilemap>();
-        tiles = tilemap.GetArrangedGameObjects();
-        cellBounds = tilemap.GetGameObjectTilemapCellBounds();
-        worldBounds = tilemap.GetGameObjectTilemapBounds();
+       
 
     }
     void Start()
     {
         
+    }
+
+    public void Init()
+    {
+        tilemap = GetComponent<Tilemap>();
+        tiles = tilemap.GetArrangedGameObjects();
+        cellBounds = tilemap.GetGameObjectTilemapCellBounds();
+        worldBounds = tilemap.GetGameObjectTilemapBounds();
     }
 
     public GameObject GetObjectAtCell(Vector3Int cell)

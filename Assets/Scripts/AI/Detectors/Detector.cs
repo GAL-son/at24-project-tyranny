@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+[RequireComponent(typeof(Painter))]
 public class Detector : MonoBehaviour
 {
     public delegate void SphereDetection(GameObject player);
