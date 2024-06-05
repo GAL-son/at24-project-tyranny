@@ -13,6 +13,7 @@ public class Walker : MonoBehaviour
 
     private TurnController turnController;
     private EnviromentController enviromentController;
+    private AnimationControllerScript acs;
 
     const float PRECISION = 0.05f;
 
@@ -27,6 +28,7 @@ public class Walker : MonoBehaviour
         turnController = TurnController.Instance;
         enviromentController = EnviromentController.Instance;
         turnController.OnTurnEnded += AlignToCurrent;
+        acs = GetComponentInChildren<AnimationControllerScript>();
     }
 
     // Update is called once per frame
@@ -37,7 +39,7 @@ public class Walker : MonoBehaviour
             if (!isAtTarget && isNext)
             {
                 Move();
-                if(IsAtTarget())
+                if (IsAtTarget())
                 {
                     AlignToCurrent();
                     isAtTarget = true;
@@ -45,14 +47,17 @@ public class Walker : MonoBehaviour
 
             }
 
-            if(isAtTarget && isNext)
+            if (isAtTarget && isNext)
             {
+                Move();
                 nextCellIndex++;
                 UpdateTarget();
             }
 
-            if(isAtTarget && !isNext)
+            if (isAtTarget && !isNext)
             {
+                acs.Idle();
+
                 if (OnDoneWalking != null)
                 {
                     OnDoneWalking();
@@ -74,7 +79,8 @@ public class Walker : MonoBehaviour
     private void UpdateTarget()
     {
         isNext = IsNextTargtet();
-        if (isNext) {
+        if (isNext)
+        {
             nextPoint = enviromentController.getCellCenter(path[nextCellIndex]);
             isAtTarget = false;
         }
@@ -82,12 +88,14 @@ public class Walker : MonoBehaviour
 
     private void Move()
     {
+        acs.Walk();
+
         Vector3 direction = (nextPoint - transform.position).normalized;
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 40f);
         transform.position += direction * moveSpeed * Time.deltaTime;
     }
 
-    
+
     private bool IsAtTarget()
     {
         return Vector3.Distance(nextPoint, transform.position) < PRECISION;
@@ -99,6 +107,7 @@ public class Walker : MonoBehaviour
     }
     private void AlignToCurrent()
     {
+        acs.Idle();
         transform.position = nextPoint;
     }
 
