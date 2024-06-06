@@ -12,6 +12,7 @@ public class Spawner : MonoBehaviour
 
     [Header("Spawn properties")]
     public float enemiesDistanceFromPlayer = 2;
+    public int numberOfEnemies = 5;
 
     private List<GameObject> enemies = new();
     private GameObject targetInstance = null;
@@ -38,20 +39,25 @@ public class Spawner : MonoBehaviour
         EnviromentController controller = EnviromentController.Instance;
         CharacterSpawner charSpawner = GetComponent<CharacterSpawner>();
         Debug.Log("SPAWN");
-        // charSpawner.MoveCharacterToPoint(playerObject, startPoint);
-        // Vector3Int charPosition = controller.worldGrid.WorldToCell(playerObject.transform.position);
+        charSpawner.MoveCharacterToPoint(playerObject, startPoint);
+        Vector3Int charPosition = controller.worldGrid.WorldToCell(playerObject.transform.position);
 
-        // TargetSpawner targetSpawner = GetComponent<TargetSpawner>();
+        TargetSpawner targetSpawner = GetComponent<TargetSpawner>();
 
-        // targetInstance = targetSpawner.Spawn(charPosition);
-
-        return;
-
-       /* foreach (GameObject enemy in enemyPrefabs)
+        targetInstance = targetSpawner.Spawn(charPosition);
+        
+        for(int i = 0; i < numberOfEnemies; i++)
         {
-            GameObject enemyInstance = charSpawner.SpawnAtDistance(enemy, charPosition, enemiesDistanceFromPlayer);
-            enemies.Add(enemyInstance);
-        }*/
+            int enemyIndex = Random.Range(0, enemyPrefabs.Count - 1);
+            Debug.Log(enemyIndex + enemies.Count);
+            GameObject enemy = charSpawner.SpawnAtDistance(enemyPrefabs[enemyIndex], charPosition, enemiesDistanceFromPlayer);
+
+            if(enemy != null)
+            {
+                enemies.Add(enemy);
+            }
+        }
+       
     }
 
     public void Respawn()

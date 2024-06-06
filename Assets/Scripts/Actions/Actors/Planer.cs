@@ -58,7 +58,7 @@ public class Planer : MonoBehaviour
             return;
         }
 
-        Debug.Log(nextAction.ToString());
+        //Debug.Log(nextAction.ToString());
 
         if (actions.Count == 0 || actions.Last().ActionTarget != nextAction.ActionTarget)
         {

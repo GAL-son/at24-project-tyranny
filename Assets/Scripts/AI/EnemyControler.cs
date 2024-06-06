@@ -70,6 +70,7 @@ public class EnemyControler : MonoBehaviour
     {
         if(!enemyPlaners.Contains(planer))
         {
+            // Debug.Log("enemy attached");
             enemyPlaners.Add(planer);
         }
     }

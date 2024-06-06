@@ -34,7 +34,6 @@ public class EnemyPlaner : MonoBehaviour
             detector.OnBoxDetection += OnBoxDetection;
         }
 
-
         enviromentController = EnviromentController.Instance;
         planer = gameObject.GetComponent<Planer>();
 

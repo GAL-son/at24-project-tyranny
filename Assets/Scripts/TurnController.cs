@@ -62,8 +62,13 @@ public class TurnController : MonoBehaviour
     {
         if (!endTurnSubscribers.ContainsKey(subscriber))
         {
+            //Debug.Log("SUBSCIRBED" + endTurnSubscribers.Count);
             endTurnSubscribers.Add(subscriber, false);
+            bool subscirberBool;
+            
+            //Debug.Log("SUBSCIRBED SUCCESFULL??" + endTurnSubscribers.TryGetValue(subscriber, out subscirberBool));
         }
+        
     }
 
     public void EndTurnUnsubscribe(GameObject subscriber)
@@ -76,11 +81,14 @@ public class TurnController : MonoBehaviour
 
     public void EndTurnRequest(GameObject subscriber)
     {
+        //Debug.Log("REQUEST FROM" + subscriber);
         bool subscirberBool;
         if (endTurnSubscribers.TryGetValue(subscriber, out subscirberBool))
         {
+            //Debug.Log("SUBSCRIBER FOUND");
             if (!subscirberBool)
             {
+                //Debug.Log("REQUEST ACCEPTED");
                 endTurnSubscribers[subscriber] = true;
             }
         }
@@ -108,11 +116,10 @@ public class TurnController : MonoBehaviour
         if (isStageAction())
         {
             bool canEndTurn = true;
-            foreach (var subscriber in endTurnSubscribers.Keys)
+            foreach (var subscriber in endTurnSubscribers.Values)
             {
-                bool canSubscriberEnd = endTurnSubscribers[subscriber];
-
-                canEndTurn &= canSubscriberEnd;
+                ;
+                canEndTurn &= subscriber;
             }
 
             if (canEndTurn)

@@ -72,10 +72,6 @@ public class Generator : MonoBehaviour
 
     private void FillPaths()
     {
-        foreach(var path in paths)
-        {
-            Debug.Log("steps" + path.Count);
-        }
         //Debug.Log("PATHS" + paths.Count);
         foreach (List<Vector2Int> path in paths)
         {
