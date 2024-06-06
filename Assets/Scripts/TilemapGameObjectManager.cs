@@ -14,6 +14,8 @@ public class TilemapGameObjectManager : MonoBehaviour
     Tilemap tilemap;
     GameObject[,,] tiles;
 
+    Vector3Int maxIndex = new Vector3Int();
+
     // Start is called before the first frame update
 
     private void Awake()
@@ -28,10 +30,13 @@ public class TilemapGameObjectManager : MonoBehaviour
 
     public void Init()
     {
+        Debug.Log("INIT");
         tilemap = GetComponent<Tilemap>();
         tiles = tilemap.GetArrangedGameObjects();
         cellBounds = tilemap.GetGameObjectTilemapCellBounds();
+        maxIndex = cellBounds.size + new Vector3Int(1,1,1);
         worldBounds = tilemap.GetGameObjectTilemapBounds();
+        Debug.Log(cellBounds);
     }
 
     public GameObject GetObjectAtCell(Vector3Int cell)
@@ -55,8 +60,12 @@ public class TilemapGameObjectManager : MonoBehaviour
     public GameObject GetObjectAtIndex(Vector3Int index)
     {
         GameObject obj = tiles[index.x, index.y, index.z];
-
         return obj;
+    }
+
+    public bool isIndexCorrect(Vector3Int index)
+    {
+        return (index.x < maxIndex.x && index.y < maxIndex.y && index.z < maxIndex.z && index.x >= 0 && index.y >= 0 && index.z >= 0);
     }
 
     public BoundsInt GetCellBounds()

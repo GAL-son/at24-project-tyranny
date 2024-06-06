@@ -1,60 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2844992368055748471
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 12732693330057938}
-  - component: {fileID: 5977612477461989750}
-  m_Layer: 0
-  m_Name: Camera Pivot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &12732693330057938
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2844992368055748471}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0.23911765, y: 0.3696438, z: -0.09904577, w: 0.89239913}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5945915684566293200}
-  m_Father: {fileID: 6002646246464148747}
-  m_LocalEulerAnglesHint: {x: 30, y: 45, z: 0}
---- !u!114 &5977612477461989750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2844992368055748471}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e81f6d2aba0070d4fa3a29d3d6a0b085, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 15
-  moveBoundOffset: 5
-  rotationIncrement: 45
-  invertRotation: 0
-  zoomIncremet: 2.5
-  zoomInLimit: 2.5
-  zoomOutLimit: 20
-  defaultZoom: 10
-  invertZoom: 0
-  enviroment: {fileID: 0}
 --- !u!1 &3698754298662965597
 GameObject:
   m_ObjectHideFlags: 0
@@ -64,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6002646246464148747}
+  - component: {fileID: 5801530643158686632}
   m_Layer: 0
   m_Name: IsometricCamera
   m_TagString: Untagged
@@ -84,10 +30,32 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 12732693330057938}
+  - {fileID: 5945915684566293200}
   - {fileID: 4489930342963781479}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5801530643158686632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3698754298662965597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e81f6d2aba0070d4fa3a29d3d6a0b085, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 10
+  moveBoundOffset: {x: 5, y: 5, z: 5}
+  rotationIncrement: 45
+  invertRotation: 0
+  zoomIncremet: 1
+  zoomInLimit: 5
+  zoomOutLimit: 25
+  defaultZoom: 10
+  invertZoom: 0
+  enviroment: {fileID: 0}
 --- !u!1 &4881480722893684118
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,7 +115,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5977612477461989750}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
         m_MethodName: OnMoveKeyboard
         m_Mode: 0
@@ -163,7 +131,7 @@ MonoBehaviour:
     m_ActionName: Gameplay/MoveCamera[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5977612477461989750}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
         m_MethodName: OnRotate
         m_Mode: 0
@@ -179,7 +147,7 @@ MonoBehaviour:
     m_ActionName: Gameplay/RotateCamera[/Keyboard/q,/Keyboard/e]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5977612477461989750}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
         m_MethodName: OnZoom
         m_Mode: 0
@@ -195,7 +163,7 @@ MonoBehaviour:
     m_ActionName: Gameplay/ZoomCamera[/Mouse/scroll]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5977612477461989750}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
         m_MethodName: OnUpdateMouse
         m_Mode: 0
@@ -211,7 +179,7 @@ MonoBehaviour:
     m_ActionName: Gameplay/MoveWithMouse[/Mouse/delta]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5977612477461989750}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
         m_MethodName: OnMoveMouse
         m_Mode: 0
@@ -229,6 +197,14 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: f68c4c85-c8a7-4f49-9dd0-23baab649f5c
     m_ActionName: Gameplay/MousePosition[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 56aa537b-a6b9-47ee-997d-6a774af2568a
+    m_ActionName: Gameplay/LeftClick[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 16a727a1-6212-4993-9e93-18470eb07ac8
+    m_ActionName: Gameplay/SpaceClick[/Keyboard/space]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay
@@ -260,12 +236,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5563887353135663919}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalRotation: {x: 0.23911765, y: 0.3696438, z: -0.09904577, w: 0.89239913}
+  m_LocalPosition: {x: -6.1237245, y: 5, z: -6.123724}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 12732693330057938}
+  m_Father: {fileID: 6002646246464148747}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &577354587234334508
 Camera:

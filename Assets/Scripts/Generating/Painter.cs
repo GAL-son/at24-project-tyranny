@@ -28,7 +28,6 @@ public class Painter : MonoBehaviour
 
     public void paintGrid(int[,] grid, Vector2Int size)
     {
-
         for(int y = 0; y < size.y; y++)
         {
             for(int x = 0; x < size.x; x++)
@@ -37,8 +36,9 @@ public class Painter : MonoBehaviour
                 paintTile(new Vector2Int(x, y), grid, size);
             }
         }
+        Debug.Log("PAINTER DONE");
+        tilemapGameObjectManager.Init();
 
-        // tilemapGameObjectManager.Init();
     }
 
     void paintTile(Vector2Int tile, int[,] grid, Vector2Int size)
@@ -51,9 +51,8 @@ public class Painter : MonoBehaviour
 
         if(o != null)
         {
-            Vector2Int newPos = tile - size;
-            Debug.Log(newPos);
-            o.transform.position = (controller.worldGrid.CellToWorld(new Vector3Int(newPos.x, newPos.y, 0)));
+            Vector2Int newPos = tile - size/2;
+            o.transform.position = (controller.getCellCenter(new Vector3Int(newPos.x, newPos.y, 0)));
         }
     }
 

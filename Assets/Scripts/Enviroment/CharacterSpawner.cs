@@ -2,33 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
 public class CharacterSpawner : MonoBehaviour
 {
+    public GameObject MoveCharacterToPoint(GameObject character, Vector3Int spawnPoint)
+    {
+        EnviromentController controller = EnviromentController.Instance;
+        bool isWalkable = false;
+        List<GameObject> cells = controller.GetGameObjectsAt(spawnPoint);
+        foreach (GameObject cell in cells)
+        {
+            Debug.Log("TRER");
+            Debug.Log(cell);
+            if (cell != null && cell.GetComponent<EnviromentTile>() != null && cell.GetComponent<EnviromentTile>().isWalkable)
+            {
+                isWalkable = true;
+                Debug.Log("WALKABBLE FOUND");
+                break;
+            }
+        }
+
+        if (!isWalkable)
+        {
+            Debug.Log("WALKABLE NOT FOUND");
+            return null;
+        }
+
+        Vector3 targerPosition = controller.getCellCenter(spawnPoint);
+        character.transform.position = targerPosition;
+        return character;
+    }
+
     public GameObject MoveCharacter(GameObject character)
     {
         EnviromentController controller = EnviromentController.Instance;
 
-        bool isWalkable = false;
         Vector3Int spawnPoint = controller.getRandomCell();
 
-        while (!isWalkable)
-        {
-            List<GameObject> cells = controller.GetGameObjectsAt(spawnPoint);
-            foreach (GameObject cell in cells)
-            {
-                if (cell != null && cell.GetComponent<EnviromentTile>() != null && cell.GetComponent<EnviromentTile>().isWalkable)
-                {
-                    isWalkable = true;
-                    break;
-                }
-            }
-
-            if (!isWalkable)
-            {
-                spawnPoint = controller.getRandomCell();
-            }
-        }
+        while (MoveCharacterToPoint(character, spawnPoint) != null) { }
 
         Vector3 targerPosition = controller.getCellCenter(spawnPoint);
         character.transform.position = targerPosition;

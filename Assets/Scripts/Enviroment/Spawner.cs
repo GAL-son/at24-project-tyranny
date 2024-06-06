@@ -16,27 +16,42 @@ public class Spawner : MonoBehaviour
     private List<GameObject> enemies = new();
     private GameObject targetInstance = null;
 
+    Vector3Int startPoint;
+    Vector3Int endPoint;
+
     private void Start()
     {
-        Spawn();
+    }
+
+    public void setStart(Vector3Int startPoint)
+    {
+        this.startPoint = startPoint;
+    }
+
+    public void setEnd(Vector3Int endPoint)
+    {
+        this.endPoint = endPoint;
     }
 
     public void Spawn()
-    {
+    {      
         EnviromentController controller = EnviromentController.Instance;
         CharacterSpawner charSpawner = GetComponent<CharacterSpawner>();
-        charSpawner.MoveCharacter(playerObject);
-        Vector3Int charPosition = controller.worldGrid.WorldToCell(playerObject.transform.position);
+        Debug.Log("SPAWN");
+        // charSpawner.MoveCharacterToPoint(playerObject, startPoint);
+        // Vector3Int charPosition = controller.worldGrid.WorldToCell(playerObject.transform.position);
 
-        foreach (GameObject enemy in enemyPrefabs)
+        // TargetSpawner targetSpawner = GetComponent<TargetSpawner>();
+
+        // targetInstance = targetSpawner.Spawn(charPosition);
+
+        return;
+
+       /* foreach (GameObject enemy in enemyPrefabs)
         {
             GameObject enemyInstance = charSpawner.SpawnAtDistance(enemy, charPosition, enemiesDistanceFromPlayer);
             enemies.Add(enemyInstance);
-        }
-
-        TargetSpawner targetSpawner = GetComponent<TargetSpawner>();
-
-        targetInstance = targetSpawner.Spawn(charPosition);
+        }*/
     }
 
     public void Respawn()

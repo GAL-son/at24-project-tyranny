@@ -231,6 +231,10 @@ public class EnviromentController : MonoBehaviour
 
     private bool isTileWaklable(Vector3Int index, TilemapGameObjectManager manager)
     {
+        if(!manager.isIndexCorrect(index))
+        {
+            return false;
+        }
         var go = manager.GetObjectAtIndex(index);
 
         return go != null && go.GetComponent<EnviromentTile>().isWalkable;
@@ -268,8 +272,14 @@ public class EnviromentController : MonoBehaviour
 
             foreach (Vector3Int neighbourCell in neighbourCells)
             {
-
-                float cellCost = cost[neighbourCell.x, neighbourCell.y, neighbourCell.z];
+                float cellCost;
+                try
+                {
+                    cellCost = cost[neighbourCell.x, neighbourCell.y, neighbourCell.z];
+                } catch (Exception e)
+                {
+                    continue;
+                }
 
                 if (cellCost != 0 && cellCost < mincost)
                 {

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
+using static System.Collections.Specialized.BitVector32;
 using Random = UnityEngine.Random;
 
 public class Generator : MonoBehaviour
@@ -15,6 +17,11 @@ public class Generator : MonoBehaviour
     [Header("Paths")]
     public int numberOfPaths = 2;
     public int numberOfSubPaths = 4;
+    [Range(0.1f, 1.0f)]
+    public float turnTreshold = 0.5f;
+    [Range(0.0f, 1.0f)]
+    public float pathVariance = 0.5f;
+    public int pathSubPoints = 2;
 
 
     [Header("Loop Safety")]
@@ -22,7 +29,7 @@ public class Generator : MonoBehaviour
 
     List<List<Vector2Int>> paths = new List<List<Vector2Int>>();
 
-    private Painter painter; 
+    private Painter painter;
     private int[,] grid;
 
 
@@ -34,11 +41,7 @@ public class Generator : MonoBehaviour
     void Start()
     {
         painter = GetComponent<Painter>();
-        grid = new int[scaleX*2, scaleY*2];
-        Debug.Log("DO PAINT");
-        Generate();
-        Debug.Log("DO PAINT");
-        painter.paintGrid(grid, new Vector2Int(scaleX*2, scaleY*2));
+        grid = new int[scaleX * 2, scaleY * 2];        
     }
 
     // Update is called once per frame
@@ -47,18 +50,35 @@ public class Generator : MonoBehaviour
 
     }
 
+    public Vector2Int getStart()
+    {
+        return start;
+    }
+
+    public Vector2Int getEnd()
+    {
+        return end;
+    }
+
     public void Generate()
     {
-       generatePaths();
-       FillPaths();
+
+        generatePaths();
+        FillPaths();
+
+        painter.paintGrid(grid, new Vector2Int(scaleX * 2, scaleY * 2));
     }
 
     private void FillPaths()
     {
-        Debug.Log("PATHS" + paths.Count);
-        foreach (List<Vector2Int> path in paths)
+        foreach(var path in paths)
         {
             Debug.Log("steps" + path.Count);
+        }
+        //Debug.Log("PATHS" + paths.Count);
+        foreach (List<Vector2Int> path in paths)
+        {
+            //Debug.Log("steps" + path.Count);
             foreach (Vector2Int p in path)
             {
                 //Debug.Log("MARK PATH" + (p.x + scaleX) + " " + (p.y + scaleY));
@@ -79,28 +99,47 @@ public class Generator : MonoBehaviour
         int minDistance = ((scaleX + scaleY) / 2) + ((Math.Abs(start.x) + Math.Abs(start.y)) / 2) - 2;
         end = RandomPointAtDistance(minDistance, start);
         var path = GeneratePath(start, end);
-        if (path != null)
+        int counter = 0;
+        while (path.Last() != end && counter < failLimit)
         {
-            paths.Add(path);
+            path = GeneratePath(start, end);
+            counter++;
         }
+        if(counter == failLimit)
+        {
+            end = path.Last();
+        }
+
+        paths.Add(path);
+
+        Debug.Log("Direct Path: " + path.Count + " spaces, Raw distance" + Vector2Int.Distance(start, end));
     }
 
     private void generatePaths()
     {
+        GenerateDirectPath();
+        Debug.Log("DIRECT GENERATED");
+    }
 
-        for (int i = 0; i < numberOfPaths; i++)
+    private void generateRandomPath()
+    {
+        /*for (int i = 0; i < numberOfPaths; i++)
         {
-            Vector2Int tempPoint = RandomPointAtDistance(12 ,start);
+            Vector2Int tempPoint = RandomPointAtDistance((int)((scaleX + scaleY) / 2 * pathVariance), start);
             var path = GeneratePath(start, tempPoint);
             if (path != null)
             {
                 paths.Add(path);
             }
 
-            path = GeneratePath(tempPoint, end);
-            if (path != null)
+            for (int j = 0; j < pathSubPoints; j++)
             {
-                paths.Add(path);
+                path = GeneratePath(tempPoint, end);
+                if (path != null)
+                {
+                    paths.Add(path);
+                }
+                tempPoint = RandomPointAtDistance((int)((scaleX + scaleY) / 2 * pathVariance), start);
             }
         }
 
@@ -135,9 +174,9 @@ public class Generator : MonoBehaviour
 
         }
 
-        paths.AddRange(subPaths);
+        paths.AddRange(subPaths);*/
 
-        Debug.Log(paths.Count);
+        //Debug.Log(paths.Count);
     }
 
     private Vector2Int RandomPoint()
@@ -173,44 +212,27 @@ public class Generator : MonoBehaviour
         Vector2Int currentPoint = path.Last();
 
 
+        int action = 0;
         int counter = 0;
         while (currentPoint != end && counter < failLimit)
         {
-            currentPoint = path.Last();
-            int action = 0;
+            Debug.Log("CURR" + currentPoint);
+            Debug.Log("TARG" + end);
             Vector2 dir = new Vector2(end.x - currentPoint.x, end.y - currentPoint.y).normalized;
 
-            if(turns > 1)
+            if (turns > 1)
             {
                 dir = (dir + RandomPoint()).normalized;
+                turns--;
             }
 
-            if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y)) // Move left to right
+            if (Mathf.Abs(dir.x) > turnTreshold || Mathf.Abs(dir.y) > turnTreshold)
             {
-                if (dir.x > 0) // Go right
-                {
-                    action = 1;
-                }
-                else // Go left
-                {
-                    action = 3;
-                }
-            }
-            else // Move up and down
-            {
-                if (dir.y > 0) // Go up
-                {
-                    action = 0;
-                }
-                else // Go down
-                {
-                    action = 2;
-                }
+                action = calculateAction(dir);
             }
 
             switch (action)
             {
-
                 case 0: // Go UP
                     currentPoint.y += 1;
                     break;
@@ -235,12 +257,7 @@ public class Generator : MonoBehaviour
             }
         }
 
-        if (path.Last() != end)
-        {
-            return null;
-        }
-
-        Debug.Log(path.Count);
+        //Debug.Log(path.Count);
 
         return path;
 
@@ -249,5 +266,31 @@ public class Generator : MonoBehaviour
     private bool IsInBounds(Vector2Int point)
     {
         return point.x > -scaleX && point.y > -scaleY && point.x < scaleX && point.y < scaleY;
+    }
+
+    private int calculateAction(Vector2 dir)
+    {
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y)) // Move left to right
+        {
+            if (dir.x > 0) // Go right
+            {
+                return 1;
+            }
+            else // Go left
+            {
+                return 3;
+            }
+        }
+        else // Move up and down
+        {
+            if (dir.y > 0) // Go up
+            {
+                return 0;
+            }
+            else // Go down
+            {
+                return 2;
+            }
+        }
     }
 }
