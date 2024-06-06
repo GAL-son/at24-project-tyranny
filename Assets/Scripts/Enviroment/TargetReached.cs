@@ -9,11 +9,7 @@ public class TargetReached : MonoBehaviour
         Debug.Log("ENTERED TARGET");
         if(other.gameObject.tag == "Player")
         {
-            TurnController.Instance.ForceEndTurn();
-            TurnController.Instance.RestartTurns();
-
-            Spawner spawner = FindAnyObjectByType<Spawner>();
-            spawner.Respawn();            
+            GameController.Instance.Restart();
         }
     }
 }

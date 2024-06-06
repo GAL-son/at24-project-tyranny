@@ -62,11 +62,7 @@ public class TurnController : MonoBehaviour
     {
         if (!endTurnSubscribers.ContainsKey(subscriber))
         {
-            //Debug.Log("SUBSCIRBED" + endTurnSubscribers.Count);
             endTurnSubscribers.Add(subscriber, false);
-            bool subscirberBool;
-            
-            //Debug.Log("SUBSCIRBED SUCCESFULL??" + endTurnSubscribers.TryGetValue(subscriber, out subscirberBool));
         }
         
     }

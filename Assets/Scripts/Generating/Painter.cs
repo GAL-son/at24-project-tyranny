@@ -64,4 +64,13 @@ public class Painter : MonoBehaviour
         }
         return null;
     }
+
+    public void Clean()
+    {
+        foreach(Transform transform in tilemapGameObjectManager.GetComponentInChildren<Transform>())
+        {
+            GameObject go = transform.gameObject;
+            Destroy(go);
+        }
+    }
 }

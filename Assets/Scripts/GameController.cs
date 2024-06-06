@@ -6,6 +6,8 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
 
+    public static GameController Instance;
+
     public CameraController CameraController;
 
     Generator generator = null;
@@ -13,6 +15,19 @@ public class GameController : MonoBehaviour
     EnviromentController enviromentController = null;
     TurnController turnController = null;
     EnemyControler enemyControler = null;
+
+    bool update = false;
+
+    private void Awake()
+    {
+        if(Instance != null)
+        {
+            Destroy(this);
+        } else
+        {
+            Instance = this;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -37,7 +52,22 @@ public class GameController : MonoBehaviour
         Vector2Int start = generator.getStart();
         spawner.setStart(new Vector3Int(start.x, start.y));
 
-        spawner.Spawn();
+        if(!update)
+        {
+            spawner.Spawn();
+        } else
+        {
+            spawner.Respawn();
+        }
 
+    }
+
+    public void Restart()
+    {
+        TurnController.Instance.ForceEndTurn();
+        TurnController.Instance.RestartTurns();        
+        generator.Clean();
+        update = true;
+        BeginRound();
     }
 }

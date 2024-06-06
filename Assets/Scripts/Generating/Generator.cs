@@ -45,6 +45,13 @@ public class Generator : MonoBehaviour
         grid = new int[scaleX * 2, scaleY * 2];        
     }
 
+    public void Clean()
+    {
+        grid = new int[scaleX * 2, scaleY * 2];
+        paths = new List<List<Vector2Int>>();
+        painter.Clean();
+    }
+
     // Update is called once per frame
     void Update()
     {
