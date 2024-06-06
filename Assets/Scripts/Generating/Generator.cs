@@ -21,6 +21,7 @@ public class Generator : MonoBehaviour
     public float turnTreshold = 0.5f;
     [Range(0.0f, 1.0f)]
     public float pathVariance = 0.5f;
+    public int auxiliaryPathCount = 3;
     public int pathSubPoints = 2;
 
 
@@ -96,7 +97,7 @@ public class Generator : MonoBehaviour
     private void GenerateDirectPath()
     {
         start = RandomPoint();
-        int minDistance = ((scaleX + scaleY) / 2) + ((Math.Abs(start.x) + Math.Abs(start.y)) / 2) - 2;
+        int minDistance = ((scaleX + scaleY) / 2) + ((Math.Abs(start.x) + Math.Abs(start.y)) / 2) - 10;
         end = RandomPointAtDistance(minDistance, start);
         var path = GeneratePath(start, end);
         int counter = 0;
@@ -118,28 +119,23 @@ public class Generator : MonoBehaviour
     private void generatePaths()
     {
         GenerateDirectPath();
+        GenerateRandomPath();
         Debug.Log("DIRECT GENERATED");
     }
 
-    private void generateRandomPath()
+    private void GenerateRandomPath()
     {
-        /*for (int i = 0; i < numberOfPaths; i++)
+        for (int i = 0; i < numberOfPaths; i++)
         {
             Vector2Int tempPoint = RandomPointAtDistance((int)((scaleX + scaleY) / 2 * pathVariance), start);
-            var path = GeneratePath(start, tempPoint);
-            if (path != null)
-            {
-                paths.Add(path);
-            }
+            List<Vector2Int> path = GeneratePath(start, tempPoint, 15);
+            paths.Add(path);
 
             for (int j = 0; j < pathSubPoints; j++)
             {
                 path = GeneratePath(tempPoint, end);
-                if (path != null)
-                {
-                    paths.Add(path);
-                }
-                tempPoint = RandomPointAtDistance((int)((scaleX + scaleY) / 2 * pathVariance), start);
+                paths.Add(path);
+                tempPoint = RandomPointAtDistance((int)((scaleX + scaleY) / 2 * pathVariance), tempPoint);
             }
         }
 
@@ -156,7 +152,6 @@ public class Generator : MonoBehaviour
             int secondPathIndex = Random.Range(0, paths.Count - 1);
             if (firstPathIndex == secondPathIndex)
             {
-
                 continue;
             }
 
@@ -174,7 +169,7 @@ public class Generator : MonoBehaviour
 
         }
 
-        paths.AddRange(subPaths);*/
+        paths.AddRange(subPaths);
 
         //Debug.Log(paths.Count);
     }
@@ -219,10 +214,12 @@ public class Generator : MonoBehaviour
             Debug.Log("CURR" + currentPoint);
             Debug.Log("TARG" + end);
             Vector2 dir = new Vector2(end.x - currentPoint.x, end.y - currentPoint.y).normalized;
+            
 
             if (turns > 1)
             {
-                dir = (dir + RandomPoint()).normalized;
+                Vector2Int random = RandomPoint();
+                dir = (dir + (new Vector2(random.x, random.y) * pathVariance)).normalized;
                 turns--;
             }
 

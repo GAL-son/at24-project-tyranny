@@ -543,12 +543,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de886f9cc8f1deb4f82da07a34bcbce2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scaleX: 20
-  scaleY: 25
+  scaleX: 30
+  scaleY: 40
   numberOfPaths: 2
   numberOfSubPaths: 4
   turnTreshold: 0.767
   pathVariance: 0.861
+  auxiliaryPathCount: 3
   pathSubPoints: 3
   failLimit: 50
 --- !u!4 &1066267343
