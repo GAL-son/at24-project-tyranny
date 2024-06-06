@@ -50,7 +50,9 @@ public class GameController : MonoBehaviour
     {
         generator.Generate();
         Vector2Int start = generator.getStart();
+        Vector2Int end = generator.getEnd();
         spawner.setStart(new Vector3Int(start.x, start.y));
+        spawner.setEnd(new Vector3Int(end.x, end.y));
 
         if(!update)
         {
@@ -60,6 +62,7 @@ public class GameController : MonoBehaviour
             spawner.Respawn();
         }
 
+        CameraController.moveTo(new Vector3Int(start.x, 0, start.y));
     }
 
     public void Restart()

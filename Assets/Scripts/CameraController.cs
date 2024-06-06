@@ -39,11 +39,16 @@ public class CameraController : MonoBehaviour
 
     private float xRotation;
 
-    private void Awake()
+    private Vector3 offset;
+
+    private void Start()
     {
-        xRotation = transform.rotation.eulerAngles.x;
+        xRotation = transform.rotation.eulerAngles.x;     
+
         GetComponentInChildren<Camera>().orthographicSize = defaultZoom;
+        offset = GetComponentInChildren<Camera>().transform.position;
     }
+
     private void LateUpdate()
     {
         if (isMovingMouse)
@@ -59,8 +64,7 @@ public class CameraController : MonoBehaviour
             }
             else
             {
-                Vector3 vector3 = newPosition.ClampToBounds(enviroment.GetGameObjectTilemapBounds(), moveBoundOffset);
-                transform.position = vector3;
+                transform.position = newPosition;
             }
         }
 
@@ -129,5 +133,11 @@ public class CameraController : MonoBehaviour
     {
         // TODO: Figure out how to get screen scale;
         return zoom * 0.5f;
+    }
+
+    public void moveTo(Vector3 position)
+    {
+        position.y = 0;
+        transform.position = position;
     }
 }

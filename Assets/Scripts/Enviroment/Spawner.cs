@@ -43,8 +43,7 @@ public class Spawner : MonoBehaviour
         Vector3Int charPosition = controller.worldGrid.WorldToCell(playerObject.transform.position);
 
         TargetSpawner targetSpawner = GetComponent<TargetSpawner>();
-
-        targetInstance = targetSpawner.Spawn(charPosition);
+        targetInstance = targetSpawner.Spawn(endPoint);
         
         for(int i = 0; i < numberOfEnemies; i++)
         {

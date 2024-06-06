@@ -616,7 +616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c01456fd9c55ea48ab22005ad05f5f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CameraController: {fileID: 0}
+  CameraController: {fileID: 1594759834}
 --- !u!114 &1099326719 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3813408057865676860, guid: 9f47e462b43148f42a885a4b99d2602b, type: 3}
@@ -935,6 +935,14 @@ PrefabInstance:
       propertyPath: enviroment
       value: 
       objectReference: {fileID: 84074765}
+    - target: {fileID: 5801530643158686632, guid: 653a288ef3493454888c5014de15f75f, type: 3}
+      propertyPath: invertZoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5801530643158686632, guid: 653a288ef3493454888c5014de15f75f, type: 3}
+      propertyPath: zoomIncremet
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5801530643158686632, guid: 653a288ef3493454888c5014de15f75f, type: 3}
       propertyPath: invertRotation
       value: 1
