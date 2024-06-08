@@ -91,7 +91,7 @@ public class Walker : MonoBehaviour
         acs.Walk();
 
         Vector3 direction = (nextPoint - transform.position).normalized;
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 40f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 30f);
         transform.position += direction * moveSpeed * Time.deltaTime;
     }
 

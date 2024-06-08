@@ -38,7 +38,6 @@ public class Spawner : MonoBehaviour
     {      
         EnviromentController controller = EnviromentController.Instance;
         CharacterSpawner charSpawner = GetComponent<CharacterSpawner>();
-        Debug.Log("SPAWN");
         charSpawner.MoveCharacterToPoint(playerObject, startPoint);
         Vector3Int charPosition = controller.worldGrid.WorldToCell(playerObject.transform.position);
 
@@ -48,7 +47,6 @@ public class Spawner : MonoBehaviour
         for(int i = 0; i < numberOfEnemies; i++)
         {
             int enemyIndex = Random.Range(0, enemyPrefabs.Count - 1);
-            Debug.Log(enemyIndex + enemies.Count);
             GameObject enemy = charSpawner.SpawnAtDistance(enemyPrefabs[enemyIndex], charPosition, enemiesDistanceFromPlayer);
 
             if(enemy != null)

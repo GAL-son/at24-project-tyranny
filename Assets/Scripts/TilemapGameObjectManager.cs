@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,13 +31,11 @@ public class TilemapGameObjectManager : MonoBehaviour
 
     public void Init()
     {
-        Debug.Log("INIT");
         tilemap = GetComponent<Tilemap>();
         tiles = tilemap.GetArrangedGameObjects();
         cellBounds = tilemap.GetGameObjectTilemapCellBounds();
         maxIndex = cellBounds.size + new Vector3Int(1,1,1);
         worldBounds = tilemap.GetGameObjectTilemapBounds();
-        Debug.Log(cellBounds);
     }
 
     public GameObject GetObjectAtCell(Vector3Int cell)
@@ -47,7 +46,13 @@ public class TilemapGameObjectManager : MonoBehaviour
             return null;
         }
 
-        return tiles[cellOffset.x, cellOffset.y, cellOffset.z]; ;
+        try
+        {
+            return tiles[cellOffset.x, cellOffset.y, cellOffset.z];
+        } catch (IndexOutOfRangeException)
+        {
+            return null;
+        }
     }
 
     public GameObject GetObjectAtPosition(Vector3 position)
@@ -70,6 +75,11 @@ public class TilemapGameObjectManager : MonoBehaviour
 
     public BoundsInt GetCellBounds()
     {
+        if(tilemap == null)
+        {
+            Debug.LogError("NO TILE MAP AT" + name);
+            return cellBounds;
+        }
         return tilemap.GetGameObjectTilemapCellBounds();
     }
 

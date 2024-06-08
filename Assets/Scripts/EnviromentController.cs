@@ -373,6 +373,14 @@ public class EnviromentController : MonoBehaviour
         return component;
     }
 
+    public void InitAll()
+    {
+        foreach(TilemapGameObjectManager tilemapGameObjectManager in enviromentTileMaps)
+        {
+            tilemapGameObjectManager.Init();
+        }
+    }
+
 
 }
 

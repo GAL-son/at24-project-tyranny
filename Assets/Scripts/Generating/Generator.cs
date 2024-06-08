@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Unity.VisualScripting;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.UI;
 using static System.Collections.Specialized.BitVector32;
@@ -10,6 +12,10 @@ using Random = UnityEngine.Random;
 
 public class Generator : MonoBehaviour
 {
+
+    private delegate void pathsDone();
+    private event pathsDone OnPathsDone;
+
     [Header("Map scale")]
     public int scaleX = 50;
     public int scaleY = 50;
@@ -24,6 +30,15 @@ public class Generator : MonoBehaviour
     public int auxiliaryPathCount = 3;
     public int pathSubPoints = 2;
 
+    [Header("Rooms")]
+    public int numberOfRooms = 5;
+    public int MinRoomSize = 5;
+    public int maxRoomSize = 10;
+    [Range(0.0f, 1.0f)]
+    public float roomSizeVariance = 0.5f;
+    [Range(0.0f, 0.7f)]
+    public float obstacleChance = 0.2f;
+
 
     [Header("Loop Safety")]
     public int failLimit = 50;
@@ -32,6 +47,8 @@ public class Generator : MonoBehaviour
 
     private Painter painter;
     private int[,] grid;
+
+    List<Vector2Int> walls = new();
 
 
     private Vector2Int start;
@@ -42,7 +59,7 @@ public class Generator : MonoBehaviour
     void Start()
     {
         painter = GetComponent<Painter>();
-        grid = new int[scaleX * 2, scaleY * 2];        
+        grid = new int[scaleX * 2, scaleY * 2];
     }
 
     public void Clean()
@@ -70,24 +87,26 @@ public class Generator : MonoBehaviour
 
     public void Generate()
     {
-
         generatePaths();
         FillPaths();
+        GenerateRooms();
 
         painter.paintGrid(grid, new Vector2Int(scaleX * 2, scaleY * 2));
     }
 
     private void FillPaths()
     {
-        //Debug.Log("PATHS" + paths.Count);
+
+        // markAround(new Vector2Int(scaleX-1, scaleY-1), Painter.WALL_ID);
         foreach (List<Vector2Int> path in paths)
         {
-            //Debug.Log("steps" + path.Count);
             foreach (Vector2Int p in path)
             {
-                //Debug.Log("MARK PATH" + (p.x + scaleX) + " " + (p.y + scaleY));
+                Vector2Int temp = new Vector2Int(p.x + scaleX, p.y + scaleY);
+                // Set Floor
                 grid[p.x + scaleX, p.y + scaleY] = Painter.FLOOR_ID;
-                //Debug.Log("?PATH" + grid[p.x + scaleX, p.y + scaleY]);
+                markAround(p, Painter.WALL_ID);
+
             }
         }
     }
@@ -96,6 +115,8 @@ public class Generator : MonoBehaviour
     {
 
     }
+
+
 
     private void GenerateDirectPath()
     {
@@ -109,21 +130,20 @@ public class Generator : MonoBehaviour
             path = GeneratePath(start, end);
             counter++;
         }
-        if(counter == failLimit)
+        if (counter == failLimit)
         {
             end = path.Last();
         }
 
         paths.Add(path);
 
-        Debug.Log("Direct Path: " + path.Count + " spaces, Raw distance" + Vector2Int.Distance(start, end));
+        // Debug.Log("Direct Path: " + path.Count + " spaces, Raw distance" + Vector2Int.Distance(start, end));
     }
 
     private void generatePaths()
     {
         GenerateDirectPath();
         GenerateRandomPath();
-        Debug.Log("DIRECT GENERATED");
     }
 
     private void GenerateRandomPath()
@@ -214,10 +234,8 @@ public class Generator : MonoBehaviour
         int counter = 0;
         while (currentPoint != end && counter < failLimit)
         {
-            Debug.Log("CURR" + currentPoint);
-            Debug.Log("TARG" + end);
             Vector2 dir = new Vector2(end.x - currentPoint.x, end.y - currentPoint.y).normalized;
-            
+
 
             if (turns > 1)
             {
@@ -247,7 +265,7 @@ public class Generator : MonoBehaviour
                     break;
             }
 
-            if (IsInBounds(currentPoint) && !path.Contains(currentPoint))
+            if (IsInBounds(currentPoint, 1) && !path.Contains(currentPoint))
             {
                 path.Add(currentPoint);
             }
@@ -263,9 +281,9 @@ public class Generator : MonoBehaviour
 
     }
 
-    private bool IsInBounds(Vector2Int point)
+    private bool IsInBounds(Vector2Int point, int offset = 0)
     {
-        return point.x > -scaleX && point.y > -scaleY && point.x < scaleX && point.y < scaleY;
+        return point.x > -scaleX + offset && point.y > -scaleY + offset && point.x < scaleX - offset && point.y < scaleY - offset;
     }
 
     private int calculateAction(Vector2 dir)
@@ -291,6 +309,81 @@ public class Generator : MonoBehaviour
             {
                 return 2;
             }
+        }
+    }
+
+    private void markAround(Vector2Int p, int mark)
+    {
+        Vector2Int index = new Vector2Int(p.x + scaleX, p.y + scaleY);
+        Vector2Int limitX = new Vector2Int(Math.Max(0, index.x - 1), Math.Min(index.x + 1, 2 * scaleX - 1));
+        Vector2Int limitY = new Vector2Int(Math.Max(0, index.y - 1), Math.Min(index.y + 1, 2 * scaleY - 1));
+
+
+        for (int x = limitX.x; x <= limitX.y; x++)
+        {
+            for (int y = limitY.x; y <= limitY.y; y++)
+            {
+                if (grid[x, y] == 0)
+                {
+                    grid[x, y] = mark;
+                }
+            }
+        }
+    }
+
+    private void GenerateRooms()
+    {
+        for (int i = 0; i < numberOfRooms; i++)
+        {
+            List<Vector2Int> originPath = paths[Random.Range(0, paths.Count - 1)];
+            Vector2Int origin = originPath[Random.Range(0, originPath.Count - 1)];
+
+            Vector2Int roomSize = new Vector2Int(
+                (int)(Random.Range(3, maxRoomSize) * (1 + roomSizeVariance)),
+                (int)(Random.Range(3, maxRoomSize) * (1 + roomSizeVariance))
+            );
+
+            Vector2Int roomOriginOffset = new Vector2Int(
+                Random.Range(0, roomSize.x / 2),
+                Random.Range(0, roomSize.y / 2)
+            );
+
+            Vector2Int roomXRange = new Vector2Int(
+                Math.Max(0, origin.x - roomOriginOffset.x + scaleX),
+                Math.Min(origin.x + roomSize.x - roomOriginOffset.x + scaleX, 2 * scaleX - 1)
+            );
+
+            Vector2Int roomYRange = new Vector2Int(
+                Math.Max(0, origin.y - roomOriginOffset.y + scaleY),
+                Math.Min(origin.y + roomSize.y - roomOriginOffset.y + scaleY, 2 * scaleY - 1)
+            );
+
+            for (int x = roomXRange.x; x <= roomXRange.y; x++)
+            {
+                for (int y = roomYRange.x; y <= roomYRange.y; y++)
+                {
+                    if (y > roomYRange.x && y < roomYRange.y && x > roomXRange.x && x < roomXRange.y)
+                    {
+                        float randomObstacleChance = Random.Range(0.0f, 1.0f);
+                        if (randomObstacleChance < obstacleChance && y > roomYRange.x + 1 && y < roomYRange.y - 1 && x > roomXRange.x + 1 && x < roomXRange.y - 1)
+                        {
+                            grid[x, y] = Painter.SMALL_WALL_ID;
+                        }
+                        else
+                        {
+                            grid[x, y] = Painter.FLOOR_ID;
+                        }
+
+
+
+                    }
+                    else if (grid[x, y] == 0)
+                    {
+                        grid[x, y] = Painter.WALL_ID;
+                    }
+                }
+            }
+
         }
     }
 }

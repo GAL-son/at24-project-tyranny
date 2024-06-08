@@ -18,14 +18,12 @@ public class CharacterSpawner : MonoBehaviour
             if (cell != null && cell.GetComponent<EnviromentTile>() != null && cell.GetComponent<EnviromentTile>().isWalkable)
             {
                 isWalkable = true;
-                Debug.Log("WALKABBLE FOUND");
                 break;
             }
         }
 
         if (!isWalkable)
         {
-            Debug.Log("WALKABLE NOT FOUND");
             return null;
         }
 
@@ -87,9 +85,12 @@ public class CharacterSpawner : MonoBehaviour
         bool isCorrect = false;
         Vector3Int spawnPoint = controller.getRandomCell();
 
-        while (!isCorrect)
+        int counter = 50;
+
+        while (!isCorrect && counter > 0)
         {
             List<GameObject> cells = controller.GetGameObjectsAt(spawnPoint);
+
             foreach (GameObject cell in cells)
             {
                 if (cell != null && cell.GetComponent<EnviromentTile>() != null && cell.GetComponent<EnviromentTile>().isWalkable)
@@ -105,7 +106,13 @@ public class CharacterSpawner : MonoBehaviour
             if (!isCorrect)
             {
                 spawnPoint = controller.getRandomCell();
+                counter--;
             }
+        }
+
+        if(!isCorrect)
+        {
+            return null;
         }
 
         Vector3 targerPosition = controller.getCellCenter(spawnPoint);

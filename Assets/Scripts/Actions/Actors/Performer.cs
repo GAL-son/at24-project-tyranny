@@ -53,7 +53,6 @@ public class Performer : MonoBehaviour
     {
         Debug.Log(gameObject);
         turnController.EndTurnUnsubscribe(gameObject);
-        Debug.Log("AFTER");
     }
 
     public void setActions(List<Action> actions)

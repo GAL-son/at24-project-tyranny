@@ -1,7 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+
+using System.Diagnostics;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 public class GameController : MonoBehaviour
 {
@@ -53,12 +53,15 @@ public class GameController : MonoBehaviour
         Vector2Int end = generator.getEnd();
         spawner.setStart(new Vector3Int(start.x, start.y));
         spawner.setEnd(new Vector3Int(end.x, end.y));
+        enviromentController.InitAll();
 
-        if(!update)
+        if (!update)
         {
+            Debug.Log("Spawn");
             spawner.Spawn();
         } else
         {
+            Debug.Log("RESPAWN");
             spawner.Respawn();
         }
 
