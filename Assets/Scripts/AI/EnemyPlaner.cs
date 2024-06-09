@@ -32,6 +32,7 @@ public class EnemyPlaner : MonoBehaviour
         if(detector != null )
         {
             detector.OnBoxDetection += OnBoxDetection;
+            detector.OnSphereDetection += OnSphereDetection;
         }
 
         enviromentController = EnviromentController.Instance;
@@ -141,6 +142,21 @@ public class EnemyPlaner : MonoBehaviour
         {
 
             turnController.ForceEndTurn();
+        }
+    }
+
+    public void OnSphereDetection(GameObject player)
+    {
+        enemyControler.EnemyDetected(player.transform.position);
+        if (turnController.isStageAction())
+        {
+            if(!isChasing)
+            {
+                turnController.ForceEndTurn();
+            } else
+            {
+                player.SendMessage("Hit", 2);
+            }
         }
     }
 

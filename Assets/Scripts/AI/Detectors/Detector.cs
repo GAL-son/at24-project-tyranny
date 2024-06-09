@@ -29,4 +29,12 @@ public class Detector : MonoBehaviour
             OnBoxDetection(player);
         }
     }
+
+    public void HandleSphereDetection(GameObject player)
+    {
+        if (OnSphereDetection != null)
+        {
+            OnSphereDetection(player);
+        }
+    }
 }

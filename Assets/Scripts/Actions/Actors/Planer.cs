@@ -16,7 +16,7 @@ using UnityEngineInternal;
 public class Planer : MonoBehaviour
 {
     public bool displayCurrentAction = true;
-    public int planCost = 0;
+    int planCost = 0;
     private TurnController turnController = null;
     private EnviromentController enviromentController = null;
     private ActionVizualizer actionVizualizer;

@@ -71,15 +71,12 @@ public class Spawner : MonoBehaviour
         targetInstance.SetActive(false);
         Destroy(targetInstance);
         targetInstance = null;
-
-        Debug.Log(enemies.Count);
         foreach (GameObject enemy in enemies)
         {
             enemy.SetActive(false);
             Destroy(enemy);
         }
         enemies.Clear();
-        Debug.Log(enemies.Count);
 
         Planer playerPlanner = playerObject.GetComponent<Planer>();
         playerPlanner.Register();
