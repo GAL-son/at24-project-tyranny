@@ -1,14 +1,16 @@
 
+using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
 public class GameController : MonoBehaviour
 {
 
     public static GameController Instance;
-
     public CameraController CameraController;
+    public Image loadingScreen = null;
 
     Generator generator = null;
     Spawner spawner= null;
@@ -48,6 +50,7 @@ public class GameController : MonoBehaviour
 
     private void BeginRound()
     {
+        
         generator.Generate();
         Vector2Int start = generator.getStart();
         Vector2Int end = generator.getEnd();
@@ -66,14 +69,27 @@ public class GameController : MonoBehaviour
         }
 
         CameraController.moveTo(new Vector3Int(start.x, 0, start.y));
+        StartCoroutine(ExitLoading());
     }
 
     public void Restart()
     {
+        EnterLoading();
         TurnController.Instance.ForceEndTurn();
         TurnController.Instance.RestartTurns();        
         generator.Clean();
         update = true;
         BeginRound();
+    }
+
+    public void EnterLoading()
+    {
+        loadingScreen.enabled = true;
+    }
+
+    IEnumerator ExitLoading()
+    {
+        yield return new WaitForSeconds(2);
+        loadingScreen.enabled = false;
     }
 }

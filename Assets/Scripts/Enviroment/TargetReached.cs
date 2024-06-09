@@ -16,7 +16,7 @@ public class TargetReached : MonoBehaviour
 
     IEnumerator RestartTimer()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
         GameController.Instance.Restart();
     }
 }
