@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class TurnController : MonoBehaviour
 {
+    public TurnUI turnUI;
+
     public delegate void TurnEnded();
     public event TurnEnded OnTurnEnded;
 
@@ -107,6 +109,11 @@ public class TurnController : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        UpdateUI();
+    }
+
     public void Update()
     {
         if (isStageAction())
@@ -137,6 +144,8 @@ public class TurnController : MonoBehaviour
             _stage = TurnStage.Planning;
             ClearEndTrurnRequests();
 
+            
+
         }
         else
         {
@@ -146,6 +155,8 @@ public class TurnController : MonoBehaviour
             }
             _stage = TurnStage.Action;
         }
+
+        UpdateUI();
     }
 
     public bool isStagePlanning()
@@ -182,5 +193,12 @@ public class TurnController : MonoBehaviour
         actionStage = ActionStageType.Regular;
         OnPlaningEnded = null;
         OnTurnEnded = null;
+        UpdateUI();
+    }
+
+    private void UpdateUI()
+    {
+        turnUI.setTurnStage(_stage);
+        turnUI.setTurnNumber(_turn);
     }
 }
