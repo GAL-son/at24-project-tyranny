@@ -10,6 +10,7 @@ public class TargetReached : MonoBehaviour
         Debug.Log("ENTERED TARGET");
         if(other.gameObject.tag == "Player")
         {
+            GameController.Instance.UpdatePoints(5);
             StartCoroutine(RestartTimer());            
         }
     }

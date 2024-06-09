@@ -77,6 +77,7 @@ public class EnemyControler : MonoBehaviour
 
     public void RaiseAlert()
     {
+        GameController.Instance.UpdatePoints(-2);
         turnController.setActionType(TurnController.ActionStageType.Atack);
         currentSearchTurn = 0;
         foreach (EnemyPlaner planer in enemyPlaners)

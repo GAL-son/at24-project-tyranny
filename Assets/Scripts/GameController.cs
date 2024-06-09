@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     EnviromentController enviromentController = null;
     TurnController turnController = null;
     EnemyControler enemyControler = null;
+    PointsCounter counter = null;
 
     bool update = false;
 
@@ -39,6 +40,7 @@ public class GameController : MonoBehaviour
         spawner = GetComponentInChildren<Spawner>();
         enemyControler = GetComponentInChildren<EnemyControler>();
         turnController = GetComponentInChildren<TurnController>();
+        counter = GetComponentInChildren<PointsCounter>();
         BeginRound();
     }
 
@@ -92,4 +94,11 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(2);
         loadingScreen.enabled = false;
     }
+
+    public void UpdatePoints(int points)
+    {
+        counter.UpdatePoints(points);
+    }
+
+   
 }
