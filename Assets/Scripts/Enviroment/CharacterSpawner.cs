@@ -13,7 +13,6 @@ public class CharacterSpawner : MonoBehaviour
         List<GameObject> cells = controller.GetGameObjectsAt(spawnPoint);
         foreach (GameObject cell in cells)
         {
-            Debug.Log("TRER");
             Debug.Log(cell);
             if (cell != null && cell.GetComponent<EnviromentTile>() != null && cell.GetComponent<EnviromentTile>().isWalkable)
             {

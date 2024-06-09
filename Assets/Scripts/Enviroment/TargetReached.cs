@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 [RequireComponent(typeof(CapsuleCollider))]
 public class TargetReached : MonoBehaviour
@@ -9,7 +10,13 @@ public class TargetReached : MonoBehaviour
         Debug.Log("ENTERED TARGET");
         if(other.gameObject.tag == "Player")
         {
-            GameController.Instance.Restart();
+            StartCoroutine(RestartTimer());            
         }
+    }
+
+    IEnumerator RestartTimer()
+    {
+        yield return new WaitForSeconds(3);
+        GameController.Instance.Restart();
     }
 }
