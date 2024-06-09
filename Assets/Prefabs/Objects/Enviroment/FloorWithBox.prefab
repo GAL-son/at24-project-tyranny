@@ -114,7 +114,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8077699799702042151}
-  - component: {fileID: -5305768686738177082}
   m_Layer: 0
   m_Name: FloorWithBox
   m_TagString: Untagged
@@ -138,20 +137,6 @@ Transform:
   - {fileID: 6776677993680312211}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-5305768686738177082
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2097137917272379539}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7741ed755627e7d40aa6eba54cd93c49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isWalkable: 0
-  tileHeight: 0
 --- !u!1 &5951188617746783501
 GameObject:
   m_ObjectHideFlags: 0

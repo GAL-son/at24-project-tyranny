@@ -90,7 +90,6 @@ public class EnemyControler : MonoBehaviour
     public void DropAlert()
     {
         turnController.setActionType(TurnController.ActionStageType.Regular);
-        Debug.Log("DROP ALERT");
         foreach (EnemyPlaner planer in enemyPlaners)
         {
             planer.ExitChase();
