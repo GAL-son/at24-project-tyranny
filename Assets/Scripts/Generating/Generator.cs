@@ -66,7 +66,6 @@ public class Generator : MonoBehaviour
     {
         grid = new int[scaleX * 2, scaleY * 2];
         paths = new List<List<Vector2Int>>();
-        painter.Clean();
     }
 
     // Update is called once per frame
@@ -102,10 +101,10 @@ public class Generator : MonoBehaviour
         {
             foreach (Vector2Int p in path)
             {
-                Vector2Int temp = new Vector2Int(p.x + scaleX, p.y + scaleY);
+                markAround(p, Painter.WALL_ID);
                 // Set Floor
                 grid[p.x + scaleX, p.y + scaleY] = Painter.FLOOR_ID;
-                markAround(p, Painter.WALL_ID);
+                
 
             }
         }

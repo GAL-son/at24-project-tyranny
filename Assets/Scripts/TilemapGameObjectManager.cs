@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.VisualScripting;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.Timeline;
 
 [RequireComponent(typeof(Tilemap))]
 
@@ -26,13 +29,15 @@ public class TilemapGameObjectManager : MonoBehaviour
     }
     void Start()
     {
-        
+        tilemap = GetComponent<Tilemap>();
+        tiles = new GameObject[0,0,0];
     }
 
     public void Init()
     {
-        tilemap = GetComponent<Tilemap>();
+        //Debug.Log("INIT INNER " + name);        
         tiles = tilemap.GetArrangedGameObjects();
+        //.Log(name + " TILES " + tiles.Length);
         cellBounds = tilemap.GetGameObjectTilemapCellBounds();
         maxIndex = cellBounds.size + new Vector3Int(1,1,1);
         worldBounds = tilemap.GetGameObjectTilemapBounds();
@@ -108,5 +113,46 @@ public class TilemapGameObjectManager : MonoBehaviour
         return (offset.x <= size.x) && (offset.y <= size.y) && (offset.z <= size.z);
     }
 
-    
+    public void GetInfo()
+    {
+        Debug.Log("TileMap" + tilemap.ToString());
+        Debug.Log("ARR SIZE" + getArraySize());
+        if(tiles != null)
+        {
+            Debug.Log("ARR Length" + tiles.Length);
+        }
+
+        int counter = 0;
+        
+        foreach (var tile in tiles)
+        {
+            if (tile != null)
+            {
+                counter++;
+            }
+        }
+
+        Debug.Log("NonNullTiles" + counter);
+    }
+
+    public void Clear()
+    {
+        tiles = null;
+        int counter = 0;
+        int numChildren = this.transform.childCount;
+        for (int i = numChildren - 1; i >= 0; i--)
+        {
+            GameObject.DestroyImmediate(this.transform.GetChild(i).gameObject);
+        }
+        //Debug.Log(transform.childCount);
+        //Debug.Log("LEFT TO DESTROY " + tilemap.GetComponentsInChildren<Transform>().Length);
+        /*foreach (Transform t in tilemap.GetComponentsInChildren<Transform>())
+        {
+            Debug.Log(t.name + " LEFT");
+        }*/
+
+        //Debug.Log("Destroyed" + counter);
+        Init();
+    }
+
 }

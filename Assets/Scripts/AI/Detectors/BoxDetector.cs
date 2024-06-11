@@ -36,7 +36,6 @@ public class BoxDetector : MonoBehaviour
 
     private bool IsInLineOfSight(Vector3 pos)
     {
-        Debug.Log("TEST LINE OF SIGHT");
         RaycastHit hit;
         bool wasPlayerHit = false;
         Vector3 direction = (pos - detector.transform.position).normalized;
@@ -44,7 +43,6 @@ public class BoxDetector : MonoBehaviour
         if (Physics.Raycast(detector.transform.position, direction, out hit,1000))
         {           
             //.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
-            Debug.Log("HIT SOMETHING: " + hit.collider.tag);
             if (hit.collider.tag == "Player")
             {
                 wasPlayerHit = true;

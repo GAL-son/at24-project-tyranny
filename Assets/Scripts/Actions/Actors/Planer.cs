@@ -49,16 +49,10 @@ public class Planer : MonoBehaviour
     }
 
     public void SaveAction()
-    {   
-        if(gameObject.tag == "Player")
-        {
-            Debug.Log("PLAYER CREATES ACTION");
-        }
+    {           
         if(nextAction == null) {
             return;
         }
-
-        //Debug.Log(nextAction.ToString());
 
         if (actions.Count == 0 || actions.Last().ActionTarget != nextAction.ActionTarget)
         {
@@ -173,13 +167,11 @@ public class Planer : MonoBehaviour
 
     public void ResetOnTurnEnd()
     {
-        Debug.Log("RESET ON END");
         triggerActionRerender = true;
         ClearPlanedAction();
         actions.Clear();
         RecalculateTotalCost();
         UpdateActionsVizualization();
-        Debug.Log(actions.Count);
     }
 
     public void AcceptPlan()
@@ -196,6 +188,7 @@ public class Planer : MonoBehaviour
 
     public void Register()
     {
+        
         turnController.OnTurnEnded += ResetOnTurnEnd;
         turnController.OnPlaningEnded += AcceptPlan;
     }

@@ -142,9 +142,7 @@ public class TurnController : MonoBehaviour
             }
             _turn++;
             _stage = TurnStage.Planning;
-            ClearEndTrurnRequests();
-
-            
+            ClearEndTrurnRequests();            
 
         }
         else
@@ -188,6 +186,13 @@ public class TurnController : MonoBehaviour
     }
     public void RestartTurns()
     {
+        if (OnTurnEnded != null)
+        {
+            OnTurnEnded();
+        }
+        ClearEndTrurnRequests();
+
+        Debug.Log("END");
         _turn = 0;
         _stage = TurnStage.Planning;
         actionStage = ActionStageType.Regular;

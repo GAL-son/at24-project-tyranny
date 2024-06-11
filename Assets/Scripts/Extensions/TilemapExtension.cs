@@ -58,11 +58,15 @@ public static class TilemapExtension
 
         GameObject[,,] objects = new GameObject [size.x+1, size.y+1, size.z+1];
 
-        foreach (Transform child in tilemap.GetComponent<Transform>())
+        int counter = 0;
+        foreach (Transform child in tilemap.GetComponentInChildren<Transform>())
         {
-            Vector3Int cellPosition = parentGrid.WorldToCell(child.localPosition);
+            counter++;
+            Vector3Int cellPosition = parentGrid.WorldToCell(child.transform.position);
             objects[cellPosition.x - bounds.min.x, cellPosition.y - bounds.min.y, cellPosition.z - bounds.min.z] = child.gameObject;
         }
+
+        //Debug.Log("ADDED: " + counter);
 
         return objects;
     }

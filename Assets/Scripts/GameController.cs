@@ -35,6 +35,7 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        EnterLoading();
         generator = GetComponentInChildren<Generator>();
         enviromentController = GetComponentInChildren<EnviromentController>();
         spawner = GetComponentInChildren<Spawner>();
@@ -51,24 +52,20 @@ public class GameController : MonoBehaviour
     }
 
     private void BeginRound()
-    {
-        
+    {        
         generator.Generate();
+        //Debug.Log("BEFORE INIT -----------------");
+        //enviromentController.getEnviromentInfo();
+        enviromentController.InitAll();
+
+        //Debug.Log("AFTER INIT -----------------");
+        //enviromentController.getEnviromentInfo();
+
         Vector2Int start = generator.getStart();
         Vector2Int end = generator.getEnd();
         spawner.setStart(new Vector3Int(start.x, start.y));
-        spawner.setEnd(new Vector3Int(end.x, end.y));
-        enviromentController.InitAll();
-
-        if (!update)
-        {
-            Debug.Log("Spawn");
-            spawner.Spawn();
-        } else
-        {
-            Debug.Log("RESPAWN");
-            spawner.Respawn();
-        }
+        spawner.setEnd(new Vector3Int(end.x, end.y));       
+        spawner.Spawn();
 
         CameraController.moveTo(new Vector3Int(start.x, 0, start.y));
         StartCoroutine(ExitLoading());
@@ -76,12 +73,22 @@ public class GameController : MonoBehaviour
 
     public void Restart()
     {
+        //Debug.Log("BEFORE CLEAR -----------------");
+        //enviromentController.getEnviromentInfo();
         EnterLoading();
         TurnController.Instance.ForceEndTurn();
         TurnController.Instance.RestartTurns();        
+        Debug.Log("SHOULD CLEAR" + spawner);
+        spawner.ClearSpawns();
         generator.Clean();
+
+        enviromentController.Clear();
+
+        //Debug.Log("AFTER CLEAR -----------------");
+        //enviromentController.getEnviromentInfo();
         update = true;
         BeginRound();
+
     }
 
     public void EnterLoading()

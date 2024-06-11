@@ -39,9 +39,7 @@ public class Spawner : MonoBehaviour
         EnviromentController controller = EnviromentController.Instance;
         CharacterSpawner charSpawner = GetComponent<CharacterSpawner>();
         charSpawner.MoveCharacterToPoint(playerObject, startPoint);
-        Vector3Int charPosition = controller.worldGrid.WorldToCell(playerObject.transform.position);
-
-        
+        Vector3Int charPosition = controller.worldGrid.WorldToCell(playerObject.transform.position);        
 
         TargetSpawner targetSpawner = GetComponent<TargetSpawner>();
         targetInstance = targetSpawner.Spawn(endPoint);
@@ -57,7 +55,8 @@ public class Spawner : MonoBehaviour
                 enemies.Add(enemy);
             }
         }
-       
+
+        
     }
 
     public void Respawn()
@@ -68,9 +67,13 @@ public class Spawner : MonoBehaviour
 
     public void ClearSpawns()
     {
+        Debug.Log("Clear");
+        // Clear target
         targetInstance.SetActive(false);
         Destroy(targetInstance);
         targetInstance = null;
+
+        // Clear enemies
         foreach (GameObject enemy in enemies)
         {
             enemy.SetActive(false);
@@ -78,7 +81,10 @@ public class Spawner : MonoBehaviour
         }
         enemies.Clear();
 
+        // Re registae player planer
         Planer playerPlanner = playerObject.GetComponent<Planer>();
+        Debug.Log(playerPlanner.ToString() + playerPlanner.name);
+
         playerPlanner.Register();
     }
 }

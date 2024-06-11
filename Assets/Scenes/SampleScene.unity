@@ -941,8 +941,10 @@ MonoBehaviour:
   walls:
   - {fileID: 2372596281620893088, guid: ddb1acd3a07d8d9449c472c19d3039bd, type: 3}
   - {fileID: 2097137917272379539, guid: 2766019367e714148930ba56ad09a0ec, type: 3}
+  - {fileID: 317312224869134470, guid: 222abef4b794b3b43a35f5a42a06243d, type: 3}
   floors:
   - {fileID: 4821745210014195915, guid: abfd462cfc3b5c54f83e4510fe2926df, type: 3}
+  - {fileID: 7595473905584413955, guid: 03338b0adf663ae469b6b57590358f6e, type: 3}
   decors: []
 --- !u!114 &1066267342
 MonoBehaviour:
@@ -956,19 +958,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de886f9cc8f1deb4f82da07a34bcbce2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scaleX: 10
-  scaleY: 10
-  numberOfPaths: 2
-  numberOfSubPaths: 4
+  scaleX: 20
+  scaleY: 15
+  numberOfPaths: 3
+  numberOfSubPaths: 2
   turnTreshold: 0.767
   pathVariance: 0.861
-  auxiliaryPathCount: 3
+  auxiliaryPathCount: 4
   pathSubPoints: 3
-  numberOfRooms: 5
-  MinRoomSize: 4
-  maxRoomSize: 10
-  roomSizeVariance: 0.703
-  obstacleChance: 0.054
+  numberOfRooms: 4
+  MinRoomSize: 6
+  maxRoomSize: 8
+  roomSizeVariance: 0.847
+  obstacleChance: 0.102
   failLimit: 50
 --- !u!4 &1066267343
 Transform:
@@ -1096,8 +1098,8 @@ MonoBehaviour:
   playerObject: {fileID: 160401944}
   enemyPrefabs:
   - {fileID: 5542005256044611806, guid: dfd48730621306443b642f6f977aa48d, type: 3}
-  enemiesDistanceFromPlayer: 3
-  numberOfEnemies: 1
+  enemiesDistanceFromPlayer: 4
+  numberOfEnemies: 3
 --- !u!114 &1145562670
 MonoBehaviour:
   m_ObjectHideFlags: 0

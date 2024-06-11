@@ -57,7 +57,7 @@ public class Performer : MonoBehaviour
 
     public void setActions(List<Action> actions)
     {
-        if(canUpdateActions)
+        if (canUpdateActions)
         {
             actionList.Clear();
             actionList.AddRange(actions);

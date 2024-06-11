@@ -34,12 +34,9 @@ public class Painter : MonoBehaviour
         {
             for (int x = 0; x < size.x; x++)
             {
-
                 paintTile(new Vector2Int(x, y), grid, size);
             }
         }
-        tilemapGameObjectManager.Init();
-
     }
 
     void paintTile(Vector2Int tile, int[,] grid, Vector2Int size)
@@ -55,7 +52,7 @@ public class Painter : MonoBehaviour
                 o = paintWall(0);
                 break;
             case SMALL_WALL_ID:
-                o = paintWall(1);
+                o = paintWall(Random.Range(1, walls.Count));
                 break;
 
         }
@@ -71,7 +68,8 @@ public class Painter : MonoBehaviour
     {
         if (floors.Count > 0)
         {
-            return Instantiate(floors[0], tilemapGameObjectManager.transform);
+            int index = Mathf.FloorToInt(Random.Range(0, 1.0f) + 0.01f);
+            return Instantiate(floors[index], tilemapGameObjectManager.transform);
         }
         return null;
     }

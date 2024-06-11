@@ -83,7 +83,7 @@ public class CharacterSpawner : MonoBehaviour
         bool isCorrect = false;
         Vector3Int spawnPoint = controller.getRandomCell();
 
-        int counter = 50;
+        int counter = 150;
 
         while (!isCorrect && counter > 0)
         {
@@ -110,6 +110,7 @@ public class CharacterSpawner : MonoBehaviour
 
         if(!isCorrect)
         {
+            Debug.Log("SPAWN NOT FOUND");
             return null;
         }
 

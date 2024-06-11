@@ -29,6 +29,11 @@ public class EnviromentController : MonoBehaviour
             Instance = this;
         }
 
+        getTileMaps();
+    }
+
+    private void getTileMaps()
+    {
         enviromentTileMaps = new List<TilemapGameObjectManager>();
 
         foreach (Transform tilemap in worldGrid.GetComponent<Transform>())
@@ -373,11 +378,29 @@ public class EnviromentController : MonoBehaviour
         return component;
     }
 
+    public void getEnviromentInfo()
+    {
+        foreach (TilemapGameObjectManager tilemapGameObjectManager in enviromentTileMaps)
+        {
+            // Debug.Log("CURR " + tilemapGameObjectManager.name);
+            tilemapGameObjectManager.GetInfo();
+        }
+    }
+
     public void InitAll()
     {
         foreach(TilemapGameObjectManager tilemapGameObjectManager in enviromentTileMaps)
         {
             tilemapGameObjectManager.Init();
+        }
+    }
+
+    public void Clear()
+    {
+        foreach (TilemapGameObjectManager tilemapGameObjectManager in enviromentTileMaps)
+        {
+            // Debug.Log("CLEAR " + name);
+            tilemapGameObjectManager.Clear();
         }
     }
 
